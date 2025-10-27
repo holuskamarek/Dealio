@@ -1,11 +1,18 @@
-# Dealio - Platforma pro Dynamické Řízení Poptávky a Loajality
+# Dealio - Aplikace pro dynamické řízení akčních nabídek.
 
 ## Popis Projektu
 
-Dealio je komplexní softwarová platforma, která propojuje lokální podniky s jejich zákazníky s primárním zaměřením na:
-- **Vyrovnání poptávky** - nabídky v méně vytížených hodinách
-- **Zvýšení návštěvnosti** - aktivní řízení kapacity
-- **Budování loajality** - sledování oblíbených podniků a notifikace
+Cílem práce je navrhnout, vyvinout a implementovat funkční základ aplikace s administrací, která pomáhá lokálním podnikům optimalizovat jejich vytížení a zároveň nabízí zákazníkům relevantní akční nabídky. Spojuje tak potřebu podniku snížit volnou kapacitu s chutí zákazníka získat výhodnou slevu v reálném čase.
+ 
+Systém je rozdělen na dvě hlavní, vzájemně propojené části:
+ 
+Administrační Web (pro Podniky):
+ 
+Podnik si zde spravuje profil a dynamicky vkládá časově omezené akční nabídky.
+Mobilní Aplikace (pro Zákazníky):
+ 
+Aplikace slouží jako centralizovaný katalog, kde uživatel najde všechny aktivní nabídky od sledovaných podniků na jednom místě.
+Nabídky jsou řazeny v reálném čase (aktivní jsou nahoře).
 
 ## Architektura
 
