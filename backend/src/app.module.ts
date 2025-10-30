@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import * as entities from './entities';
 import { SeedModule } from './database/seed.module';
+import { BusinessesModule } from './modules/businesses/businesses.module';
+import { PromotionsModule } from './modules/promotions/promotions.module';
 
 @Module({
   imports: [
@@ -35,6 +37,9 @@ import { SeedModule } from './database/seed.module';
     }),
     // Seed modul pro testovací data
     SeedModule,
+    // API moduly
+    BusinessesModule,
+    PromotionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
