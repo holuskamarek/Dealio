@@ -14,50 +14,50 @@ import { Redemption } from './redemption.entity';
 @Entity('promotions')
 export class Promotion {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uuid' })
-  business_id: string;
+  business_id!: string;
 
   @Column({ type: 'varchar', length: 255 })
-  title: string;
+  title!: string;
 
   @Column({ type: 'text' })
-  description: string;
+  description!: string;
 
   @Column({ type: 'integer', default: 0 })
-  discount_percent: number;
+  discount_percent!: number;
 
   @Column({ type: 'timestamp' })
-  start_datetime: Date;
+  start_datetime!: Date;
 
   @Column({ type: 'timestamp' })
-  end_datetime: Date;
+  end_datetime!: Date;
 
   @Column({ type: 'simple-array', nullable: true })
-  target_hours: string[];
+  target_hours!: string[];
 
   @Column({ type: 'integer', nullable: true })
-  limit: number;
+  limit!: number;
 
   @Column({ type: 'boolean', default: true })
-  is_active: boolean;
+  is_active!: boolean;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 
   // Relations
   @ManyToOne(() => Business, (business) => business.promotions)
-  business: Business;
+  business!: Business;
 
   @OneToMany(() => Event, (event) => event.promotion)
-  events: Event[];
+  events!: Event[];
 
   @OneToMany(() => Redemption, (redemption) => redemption.promotion)
-  redemptions: Redemption[];
+  redemptions!: Redemption[];
 
   // TODO: Přidat fotografie/obrázky
   // TODO: Přidat kategorie akcí

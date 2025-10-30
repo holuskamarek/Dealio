@@ -11,32 +11,32 @@ import { User } from './user.entity';
 @Entity('events')
 export class Event {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uuid' })
-  promotion_id: string;
+  promotion_id!: string;
 
   @Column({ type: 'uuid', nullable: true })
-  user_id: string;
+  user_id!: string | null;
 
   @Column({
     type: 'enum',
     enum: ['view', 'click', 'redeem', 'follow', 'unfollow'],
   })
-  type: 'view' | 'click' | 'redeem' | 'follow' | 'unfollow';
+  type!: 'view' | 'click' | 'redeem' | 'follow' | 'unfollow';
 
   @Column({ type: 'json', nullable: true })
-  metadata: Record<string, any>;
+  metadata!: Record<string, any>;
 
   @CreateDateColumn()
-  timestamp: Date;
+  timestamp!: Date;
 
   // Relations
   @ManyToOne(() => Promotion, (promotion) => promotion.events)
-  promotion: Promotion;
+  promotion!: Promotion;
 
   @ManyToOne(() => User, (user) => user.events, { nullable: true })
-  user: User;
+  user!: User;
 
   // TODO: Přidat IP adresu pro anonymní tracking
   // TODO: Přidat user agent pro device tracking
