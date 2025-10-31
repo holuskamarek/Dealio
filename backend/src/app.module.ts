@@ -7,6 +7,7 @@ import * as entities from './entities';
 import { SeedModule } from './database/seed.module';
 import { BusinessesModule } from './modules/businesses/businesses.module';
 import { PromotionsModule } from './modules/promotions/promotions.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -37,6 +38,8 @@ import { PromotionsModule } from './modules/promotions/promotions.module';
     }),
     // Seed modul pro testovací data
     SeedModule,
+    // Auth modul
+    AuthModule,
     // API moduly
     BusinessesModule,
     PromotionsModule,
