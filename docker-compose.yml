@@ -15,6 +15,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: dealio-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: demo@example.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # TODO: Přidat volumes pro persistenci pgAdmin nastavení
+    # volumes:
+    #   - pgadmin_data:/var/lib/pgadmin
 
   # TODO: Přidat Redis pro caching a session management
   # redis:
@@ -43,4 +57,3 @@ services:
 
 volumes:
   postgres_data:
-
