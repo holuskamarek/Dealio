@@ -27,7 +27,7 @@ export class Business {
   })
   type!: 'kavárna' | 'bistro' | 'restaurace' | 'bar' | 'cukrárna' | 'jiné';
 
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', name: 'owner_id' })
   owner_id!: string;
 
   @Column({ type: 'json', nullable: true })

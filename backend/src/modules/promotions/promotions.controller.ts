@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Query, Body, UseGuards, Request } from '@nestjs/common';
 import { PromotionsService } from './promotions.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('promotions')
 export class PromotionsController {
@@ -28,9 +29,41 @@ export class PromotionsController {
     return this.promotionsService.findById(id);
   }
 
+  /**
+   * POST /promotions
+   * Vytvoří novou akci
+   * Vyžaduje autentizaci
+   * TODO: Přidat DTO a validaci
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  async create(@Body() data: any, @Request() req: any) {
+    return this.promotionsService.create(data, req.user);
+  }
+
+  /**
+   * PUT /promotions/:id
+   * Upraví existující akci
+   * Jen vlastník podniku může upravit
+   * TODO: Přidat DTO a validaci
+   */
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() data: any, @Request() req: any) {
+    return this.promotionsService.update(id, data, req.user);
+  }
+
+  /**
+   * DELETE /promotions/:id
+   * Smaže akci
+   * Jen vlastník podniku může smazat
+   */
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async delete(@Param('id') id: string, @Request() req: any) {
+    return this.promotionsService.delete(id, req.user);
+  }
+
   // TODO: Přidat GET /promotions/business/:businessId (akce pro konkrétní podnik)
-  // TODO: Přidat POST /promotions (vytvoření akce - pouze pro business_owner)
-  // TODO: Přidat PUT /promotions/:id (úprava akce - pouze pro vlastníka)
-  // TODO: Přidat DELETE /promotions/:id (smazání akce - pouze pro vlastníka)
 }
 

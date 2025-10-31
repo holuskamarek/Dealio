@@ -1,13 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Promotion } from '../../entities';
+import { Promotion, Business, User } from '../../entities';
 
 @Injectable()
 export class PromotionsService {
   constructor(
     @InjectRepository(Promotion)
     private promotionRepository: Repository<Promotion>,
+    @InjectRepository(Business)
+    private businessRepository: Repository<Business>,
   ) {}
 
   /**
@@ -90,6 +92,130 @@ export class PromotionsService {
       success: true,
       data: promotions,
       count: promotions.length,
+    };
+  }
+
+  /**
+   * Vytvoří novou akci
+   * TODO: Přidat validaci vstupů (DTO)
+   */
+  async create(data: any, user: User) {
+    // FIXME: Validace by měla být v DTO
+    if (!data.business_id || !data.title || !data.description || !data.start_datetime || !data.end_datetime) {
+      throw new BadRequestException('Chybí povinná pole: business_id, title, description, start_datetime, end_datetime');
+    }
+
+    // Zkontroluj, jestli podnik existuje a patří uživateli
+    const business = await this.businessRepository.findOne({
+      where: { id: data.business_id },
+    });
+
+    if (!business) {
+      throw new NotFoundException(`Podnik s ID ${data.business_id} nebyl nalezen`);
+    }
+
+    if (business.owner_id !== user.id) {
+      throw new ForbiddenException('Nemáš oprávnění vytvořit akci pro tento podnik');
+    }
+
+    const promotion = this.promotionRepository.create({
+      business_id: data.business_id,
+      title: data.title,
+      description: data.description,
+      discount_percent: data.discount_percent || 0,
+      start_datetime: new Date(data.start_datetime),
+      end_datetime: new Date(data.end_datetime),
+      target_hours: data.target_hours,
+      limit: data.limit,
+      is_active: data.is_active !== false, // Výchozí true
+    });
+
+    await this.promotionRepository.save(promotion);
+
+    return {
+      success: true,
+      message: 'Akce byla úspěšně vytvořena',
+      data: promotion,
+    };
+  }
+
+  /**
+   * Upraví existující akci
+   * Jen vlastník podniku může upravit
+   * TODO: Přidat DTO a validaci
+   */
+  async update(id: string, data: any, user: User) {
+    const promotion = await this.promotionRepository.findOne({
+      where: { id },
+    });
+
+    if (!promotion) {
+      throw new NotFoundException(`Akce s ID ${id} nebyla nalezena`);
+    }
+
+    // Zkontroluj, jestli je uživatel vlastník podniku
+    const business = await this.businessRepository.findOne({
+      where: { id: promotion.business_id },
+    });
+
+    if (!business) {
+      throw new NotFoundException(`Podnik s ID ${promotion.business_id} nebyl nalezen`);
+    }
+
+    if (business.owner_id !== user.id) {
+      throw new ForbiddenException('Nemáš oprávnění upravit tuto akci');
+    }
+
+    // Aktualizuj pole
+    if (data.title) promotion.title = data.title;
+    if (data.description) promotion.description = data.description;
+    if (data.discount_percent !== undefined) promotion.discount_percent = data.discount_percent;
+    if (data.start_datetime) promotion.start_datetime = new Date(data.start_datetime);
+    if (data.end_datetime) promotion.end_datetime = new Date(data.end_datetime);
+    if (data.target_hours) promotion.target_hours = data.target_hours;
+    if (data.limit !== undefined) promotion.limit = data.limit;
+    if (data.is_active !== undefined) promotion.is_active = data.is_active;
+
+    await this.promotionRepository.save(promotion);
+
+    return {
+      success: true,
+      message: 'Akce byla úspěšně aktualizována',
+      data: promotion,
+    };
+  }
+
+  /**
+   * Smaže akci
+   * Jen vlastník podniku může smazat
+   */
+  async delete(id: string, user: User) {
+    const promotion = await this.promotionRepository.findOne({
+      where: { id },
+    });
+
+    if (!promotion) {
+      throw new NotFoundException(`Akce s ID ${id} nebyla nalezena`);
+    }
+
+    // Zkontroluj, jestli je uživatel vlastník podniku
+    const business = await this.businessRepository.findOne({
+      where: { id: promotion.business_id },
+    });
+
+    if (!business) {
+      throw new NotFoundException(`Podnik s ID ${promotion.business_id} nebyl nalezen`);
+    }
+
+    if (business.owner_id !== user.id) {
+      throw new ForbiddenException('Nemáš oprávnění smazat tuto akci');
+    }
+
+    await this.promotionRepository.remove(promotion);
+
+    return {
+      success: true,
+      message: 'Akce byla úspěšně smazána',
     };
   }
 }

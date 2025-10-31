@@ -48,4 +48,3 @@ import { AuthModule } from './modules/auth/auth.module';
   providers: [AppService],
 })
 export class AppModule {}
-

@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Request } from '@nestjs/common';
 import { BusinessesService } from './businesses.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('businesses')
 export class BusinessesController {
@@ -23,8 +24,39 @@ export class BusinessesController {
     return this.businessesService.findById(id);
   }
 
-  // TODO: Přidat POST /businesses (vytvoření podniku - pouze pro business_owner)
-  // TODO: Přidat PUT /businesses/:id (úprava podniku - pouze pro vlastníka)
-  // TODO: Přidat DELETE /businesses/:id (smazání podniku - pouze pro vlastníka)
+  /**
+   * POST /businesses
+   * Vytvoří nový podnik
+   * Vyžaduje autentizaci
+   * TODO: Přidat DTO a validaci
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  async create(@Body() data: any, @Request() req: any) {
+    return this.businessesService.create(data, req.user);
+  }
+
+  /**
+   * PUT /businesses/:id
+   * Upraví existující podnik
+   * Jen vlastník může upravit
+   * TODO: Přidat DTO a validaci
+   */
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() data: any, @Request() req: any) {
+    return this.businessesService.update(id, data, req.user);
+  }
+
+  /**
+   * DELETE /businesses/:id
+   * Smaže podnik
+   * Jen vlastník může smazat
+   */
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async delete(@Param('id') id: string, @Request() req: any) {
+    return this.businessesService.delete(id, req.user);
+  }
 }
 
