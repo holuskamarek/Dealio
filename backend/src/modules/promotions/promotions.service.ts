@@ -97,12 +97,11 @@ export class PromotionsService {
 
   /**
    * Vytvoří novou akci
-   * TODO: Přidat validaci vstupů (DTO)
    */
   async create(data: any, user: User) {
-    // FIXME: Validace by měla být v DTO
-    if (!data.business_id || !data.title || !data.description || !data.start_datetime || !data.end_datetime) {
-      throw new BadRequestException('Chybí povinná pole: business_id, title, description, start_datetime, end_datetime');
+    // Validace je nyní v DTO (CreatePromotionDto)
+    if (!data.business_id || !data.title || !data.start_datetime || !data.end_datetime) {
+      throw new BadRequestException('Chybí povinná pole: business_id, title, start_datetime, end_datetime');
     }
 
     // Zkontroluj, jestli podnik existuje a patří uživateli
@@ -118,25 +117,29 @@ export class PromotionsService {
       throw new ForbiddenException('Nemáš oprávnění vytvořit akci pro tento podnik');
     }
 
-    const promotion = this.promotionRepository.create({
-      business_id: data.business_id,
-      title: data.title,
-      description: data.description,
-      discount_percent: data.discount_percent || 0,
-      start_datetime: new Date(data.start_datetime),
-      end_datetime: new Date(data.end_datetime),
-      target_hours: data.target_hours,
-      limit: data.limit,
-      is_active: data.is_active !== false, // Výchozí true
-    });
+    try {
+      const promotion = this.promotionRepository.create({
+        business_id: data.business_id,
+        title: data.title,
+        description: data.description,
+        discount_percent: data.discount_percent || 0,
+        start_datetime: new Date(data.start_datetime),
+        end_datetime: new Date(data.end_datetime),
+        target_hours: data.target_hours,
+        limit: data.limit,
+        is_active: data.is_active !== false, // Výchozí true
+      });
 
-    await this.promotionRepository.save(promotion);
-
-    return {
-      success: true,
-      message: 'Akce byla úspěšně vytvořena',
-      data: promotion,
-    };
+      await this.promotionRepository.save(promotion);
+      return {
+        success: true,
+        message: 'Akce byla úspěšně vytvořena',
+        data: promotion,
+      };
+    } catch (error: any) {
+      console.error('Chyba při vytváření akce:', error);
+      throw new BadRequestException('Chyba při vytváření akce: ' + (error?.message || 'Neznámá chyba'));
+    }
   }
 
   /**

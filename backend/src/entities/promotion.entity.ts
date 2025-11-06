@@ -22,8 +22,8 @@ export class Promotion {
   @Column({ type: 'varchar', length: 255 })
   title!: string;
 
-  @Column({ type: 'text' })
-  description!: string;
+  @Column({ type: 'text', nullable: true })
+  description?: string;
 
   @Column({ type: 'integer', default: 0 })
   discount_percent!: number;

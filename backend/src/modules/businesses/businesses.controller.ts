@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Request } from '@nestjs/common';
 import { BusinessesService } from './businesses.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CreateBusinessDto, UpdateBusinessDto } from './dto';
 
 @Controller('businesses')
 export class BusinessesController {
@@ -28,11 +29,10 @@ export class BusinessesController {
    * POST /businesses
    * Vytvoří nový podnik
    * Vyžaduje autentizaci
-   * TODO: Přidat DTO a validaci
    */
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() data: any, @Request() req: any) {
+  async create(@Body() data: CreateBusinessDto, @Request() req: any) {
     return this.businessesService.create(data, req.user);
   }
 
@@ -40,11 +40,10 @@ export class BusinessesController {
    * PUT /businesses/:id
    * Upraví existující podnik
    * Jen vlastník může upravit
-   * TODO: Přidat DTO a validaci
    */
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async update(@Param('id') id: string, @Body() data: any, @Request() req: any) {
+  async update(@Param('id') id: string, @Body() data: UpdateBusinessDto, @Request() req: any) {
     return this.businessesService.update(id, data, req.user);
   }
 
