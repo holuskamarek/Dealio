@@ -9,6 +9,7 @@ import {
 import { Business } from './business.entity';
 import { Event } from './event.entity';
 import { Redemption } from './redemption.entity';
+import { Follow } from './follow.entity';
 
 @Entity('users')
 export class User {
@@ -46,6 +47,9 @@ export class User {
 
   @OneToMany(() => Redemption, (redemption) => redemption.user)
   redemptions!: Redemption[];
+
+  @OneToMany(() => Follow, (follow) => follow.user)
+  follows!: Follow[];
 
   // TODO: Přidat pole pro notifikace (email_verified, phone, atd.)
   // TODO: Přidat pole pro loajální body

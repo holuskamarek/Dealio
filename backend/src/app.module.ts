@@ -30,6 +30,7 @@ import { AuthModule } from './modules/auth/auth.module';
         entities.Promotion,
         entities.Event,
         entities.Redemption,
+        entities.Follow,
       ],
       synchronize: process.env.NODE_ENV === 'development',
       logging: process.env.NODE_ENV === 'development',

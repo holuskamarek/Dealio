@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Promotion } from './promotion.entity';
+import { Follow } from './follow.entity';
 
 @Entity('businesses')
 export class Business {
@@ -54,6 +55,9 @@ export class Business {
 
   @OneToMany(() => Promotion, (promotion) => promotion.business)
   promotions!: Promotion[];
+
+  @OneToMany(() => Follow, (follow) => follow.business)
+  followers!: Follow[];
 
   // TODO: Přidat geolokaci (latitude, longitude)
   // TODO: Přidat fotografie
