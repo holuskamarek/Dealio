@@ -1,9 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { GlobalExceptionFilter } from './common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Globální exception filter
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   // Globální validační pipe
   app.useGlobalPipes(

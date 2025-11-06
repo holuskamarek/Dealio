@@ -35,19 +35,26 @@ export class BusinessesService {
    * FIXME: Pokud podnik neexistuje, vrátí 404
    */
   async findById(id: string) {
-    const business = await this.businessRepository.findOne({
-      where: { id },
-      relations: ['owner', 'promotions'],
-    });
+    try {
+      const business = await this.businessRepository.findOne({
+        where: { id },
+        relations: ['owner', 'promotions'],
+      });
 
-    if (!business) {
+      if (!business) {
+        throw new NotFoundException(`Podnik s ID ${id} nebyl nalezen`);
+      }
+
+      return business;
+    } catch (error) {
+      // Pokud je to už NotFoundException, přehoď ji dál
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      // Jinak zaloguj a přehoď jako NotFoundException
+      console.error('Error in findById:', error);
       throw new NotFoundException(`Podnik s ID ${id} nebyl nalezen`);
     }
-
-    return {
-      success: true,
-      data: business,
-    };
   }
 
   /**
