@@ -8,6 +8,7 @@ import { SeedModule } from './database/seed.module';
 import { BusinessesModule } from './modules/businesses/businesses.module';
 import { PromotionsModule } from './modules/promotions/promotions.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { FollowsModule } from './modules/follows/follows.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { AuthModule } from './modules/auth/auth.module';
     // API moduly
     BusinessesModule,
     PromotionsModule,
+    FollowsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
