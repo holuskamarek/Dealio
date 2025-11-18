@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { Business } from './business.entity';
 import { Event } from './event.entity';
@@ -51,6 +52,7 @@ export class Promotion {
 
   // Relations
   @ManyToOne(() => Business, (business) => business.promotions)
+  @JoinColumn({ name: 'business_id' })
   business!: Business;
 
   @OneToMany(() => Event, (event) => event.promotion)

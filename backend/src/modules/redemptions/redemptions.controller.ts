@@ -73,16 +73,20 @@ export class RedemptionsController {
         id: redemption.id,
         pin_code: redemption.pin_code,
         used_at: redemption.used_at,
-        user: {
-          id: redemption.user.id,
-          name: redemption.user.name,
-          email: redemption.user.email,
-        },
-        promotion: {
-          id: redemption.promotion.id,
-          title: redemption.promotion.title,
-          description: redemption.promotion.description,
-        },
+        user: redemption.user
+          ? {
+              id: redemption.user.id,
+              name: redemption.user.name,
+              email: redemption.user.email,
+            }
+          : null,
+        promotion: redemption.promotion
+          ? {
+              id: redemption.promotion.id,
+              title: redemption.promotion.title,
+              description: redemption.promotion.description,
+            }
+          : null,
       },
     };
   }

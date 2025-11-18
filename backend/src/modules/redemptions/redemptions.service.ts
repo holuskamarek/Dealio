@@ -130,7 +130,7 @@ export class RedemptionsService {
     // Najdi redemption podle PIN kódu
     const redemption = await this.redemptionRepository.findOne({
       where: { pin_code: pinCode.toUpperCase() },
-      relations: ['promotion', 'promotion.business', 'user'],
+      relations: ['user'],
     });
 
     if (!redemption) {
@@ -142,12 +142,29 @@ export class RedemptionsService {
       throw new BadRequestException('Tento PIN kód již byl použit');
     }
 
+    // Načti promotion s business samostatně
+    const promotion = await this.promotionRepository.findOne({
+      where: { id: redemption.promotion_id },
+      relations: ['business'],
+    });
+
+    if (!promotion) {
+      throw new NotFoundException('Akce pro tento PIN kód nebyla nalezena');
+    }
+
+    if (!promotion.business) {
+      throw new NotFoundException('Podnik pro tuto akci nebyl nalezen');
+    }
+
     // Zkontroluj, jestli podnik patří tomuto vlastníkovi
-    if (redemption.promotion.business.owner_id !== businessOwnerId) {
+    if (promotion.business.owner_id !== businessOwnerId) {
       throw new ForbiddenException(
         'Nemáš oprávnění uplatnit tento PIN kód',
       );
     }
+
+    // Přidej promotion do redemption pro response
+    redemption.promotion = promotion;
 
     // TODO: Zkontroluj expiraci PIN kódu
 
