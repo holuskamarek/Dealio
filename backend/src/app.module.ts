@@ -10,6 +10,7 @@ import { PromotionsModule } from './modules/promotions/promotions.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { FollowsModule } from './modules/follows/follows.module';
 import { RedemptionsModule } from './modules/redemptions/redemptions.module';
+import { EventsModule } from './modules/events/events.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { RedemptionsModule } from './modules/redemptions/redemptions.module';
     PromotionsModule,
     FollowsModule,
     RedemptionsModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
