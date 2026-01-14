@@ -18,9 +18,14 @@ async function bootstrap() {
     }),
   );
 
-  // TODO: Přidat CORS konfiguraci pro mobilní app
-  // TODO: Přidat rate limiting middleware
-  // TODO: Přidat logging middleware
+  // CORS - povolí požadavky z admin webu a mobilní app
+  app.enableCors({
+    origin: [
+      'http://localhost:5173', // admin web (Vite)
+      'http://localhost:8081', // mobile app (Expo)
+      'http://localhost:3001', // backup port
+    ],
+  });
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
