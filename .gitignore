@@ -48,6 +48,11 @@ tmp/
 temp/
 *.tmp
 
-# Local development notes (NECOMMITOVAT!)
+# Local development notes
 DEVELOPMENT_LOG.md
+
+# Manual testing & documentation
+tests/
+docs/
+*.postman_collection.json
 
