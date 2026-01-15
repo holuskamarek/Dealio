@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "CrowdEase",
+    "slug": "crowdease",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/CrowdEase_logo.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/CrowdEase_logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#081639"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.crowdease.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/CrowdEase_logo.png",
+        "backgroundColor": "#081639"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.crowdease.app"
+    },
+    "web": {
+      "favicon": "./assets/CrowdEase_logo.png"
+    }
+  }
+}
