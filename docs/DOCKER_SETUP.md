@@ -93,10 +93,3 @@ docker-compose logs postgres
 
 Zobrazí logy kontejneru.
 
-## TODO
-
-- [ ] Přidat Redis kontejner
-- [ ] Přidat backend kontejner
-- [ ] Přidat nginx reverse proxy
-- [ ] Přidat development vs production konfigurace
-

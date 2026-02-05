@@ -24,7 +24,7 @@ export class SeedService {
       return;
     }
 
-    console.log('🌱 Spouštím seed...');
+    console.log('Spouštím seed...');
 
     // Vytvoř testovací uživatele
     const user1 = await this.createUser(
@@ -42,14 +42,8 @@ export class SeedService {
     );
 
     // TODO: Vytvořit admin uživatele
-    // const admin = await this.createUser(
-    //   'admin@example.com',
-    //   'password123',
-    //   'Admin User',
-    //   'admin',
-    // );
 
-    console.log('✅ Uživatelé vytvořeni');
+    console.log('Uživatelé vytvořeni');
 
     // Vytvoř testovací podniky
     const business1 = await this.businessRepository.save({
@@ -90,7 +84,7 @@ export class SeedService {
       },
     });
 
-    console.log('✅ Podniky vytvořeny');
+    console.log(' Podniky vytvořeny');
 
     // Vytvoř testovací akce
     const now = new Date();
@@ -121,7 +115,7 @@ export class SeedService {
       is_active: true,
     });
 
-    console.log('✅ Akce vytvořeny');
+    console.log(' Akce vytvořeny');
 
     // Vytvoř testovací eventy (analytika)
     await this.eventRepository.save({
@@ -152,9 +146,9 @@ export class SeedService {
       metadata: { device: 'web', browser: 'Chrome' },
     });
 
-    console.log('✅ Eventy vytvořeny');
+    console.log(' Eventy vytvořeny');
 
-    console.log('🎉 Seed úspěšně dokončen!');
+    console.log(' Seed úspěšně dokončen!');
   }
 
   private async createUser(

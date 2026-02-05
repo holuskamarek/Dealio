@@ -12,9 +12,7 @@ import { Business } from './business.entity';
 /**
  * Follow entita reprezentuje vztah sledování mezi uživatelem a podnikem
  * Umožňuje uživatelům sledovat oblíbené podniky a dostávat notifikace o nových akcích
- * 
- * TODO: Přidat notifikační preference (email, push)
- * FIXME: Přidat unique constraint na kombinaci user_id + business_id
+
  */
 @Entity('follows')
 export class Follow {

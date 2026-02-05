@@ -37,8 +37,6 @@ import { EventsModule } from './modules/events/events.module';
       ],
       synchronize: process.env.NODE_ENV === 'development',
       logging: process.env.NODE_ENV === 'development',
-      // TODO: Přidat SSL pro produkci
-      // ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
     }),
     // Seed modul pro testovací data
     SeedModule,

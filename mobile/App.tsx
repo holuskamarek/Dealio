@@ -10,12 +10,19 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation';
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleAuthenticated = () => {
+    setIsAuthenticated(true);
+  };
 
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <RootNavigator isAuthenticated={isAuthenticated} />
+        <RootNavigator
+          isAuthenticated={isAuthenticated}
+          onAuthenticated={handleAuthenticated}
+        />
         <StatusBar style={isAuthenticated ? 'dark' : 'light'} />
       </NavigationContainer>
     </SafeAreaProvider>

@@ -38,7 +38,5 @@ export class Event {
   @ManyToOne(() => User, (user) => user.events, { nullable: true })
   user!: User;
 
-  // TODO: Přidat IP adresu pro anonymní tracking
-  // TODO: Přidat user agent pro device tracking
 }
 

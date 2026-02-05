@@ -6,24 +6,17 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthStackParamList } from './types';
-
-// Placeholder screeny
-import { View, Text, StyleSheet } from 'react-native';
-import { colors, typography } from '../theme';
-
-const PlaceholderScreen = ({ title }: { title: string }) => (
-  <View style={styles.placeholder}>
-    <Text style={styles.placeholderText}>{title}</Text>
-    <Text style={styles.placeholderSubtext}>Bude implementováno</Text>
-  </View>
-);
-
-const LoginScreen = () => <PlaceholderScreen title="Login" />;
-const RegisterScreen = () => <PlaceholderScreen title="Register" />;
+import { LoginScreen } from '../screens/LoginScreen';
+import { RegisterScreen } from '../screens/RegisterScreen';
+import { colors } from '../theme';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
-export const AuthNavigator: React.FC = () => {
+interface AuthNavigatorProps {
+  onAuthenticated?: () => void;
+}
+
+export const AuthNavigator: React.FC<AuthNavigatorProps> = ({ onAuthenticated }) => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -31,27 +24,13 @@ export const AuthNavigator: React.FC = () => {
         contentStyle: { backgroundColor: colors.dark.background },
       }}
     >
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="Login">
+        {(props) => <LoginScreen {...props} onLogin={onAuthenticated} />}
+      </Stack.Screen>
+      <Stack.Screen name="Register">
+        {(props) => <RegisterScreen {...props} onRegister={onAuthenticated} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  placeholder: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.dark.background,
-  },
-  placeholderText: {
-    ...typography.h1,
-    color: colors.primary.main,
-    marginBottom: 8,
-  },
-  placeholderSubtext: {
-    ...typography.body,
-    color: colors.dark.textSecondary,
-  },
-});
 

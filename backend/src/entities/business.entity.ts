@@ -58,9 +58,5 @@ export class Business {
 
   @OneToMany(() => Follow, (follow) => follow.business)
   followers!: Follow[];
-
-  // TODO: Přidat geolokaci (latitude, longitude)
-  // TODO: Přidat fotografie
-  // TODO: Přidat rating/recenze
 }
 

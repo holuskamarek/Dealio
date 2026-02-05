@@ -92,19 +92,6 @@ created_at: timestamp
 - `POST /redemptions/:promotionId/redeem` - Uplatnění akce
 - `GET /redemptions/me` - Moje uplatnění
 
-## Bezpečnost
 
-- **Autentizace**: JWT tokeny
-- **Validace**: Server-side validace všech vstupů
-- **Rate Limiting**: Ochrana proti brute-force útokům
-- **CORS**: Konfigurováno pro mobilní app a admin web
 
-## TODO
-
-- [ ] Implementovat databázové migrace
-- [ ] Přidat Redis pro caching
-- [ ] Implementovat email notifikace
-- [ ] Přidat WebSocket pro real-time notifikace
-- [ ] Implementovat admin dashboard
-- [ ] Přidat mobilní aplikaci
 

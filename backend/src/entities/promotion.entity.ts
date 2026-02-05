@@ -63,6 +63,5 @@ export class Promotion {
 
   // TODO: Přidat fotografie/obrázky
   // TODO: Přidat kategorie akcí
-  // FIXME: target_hours by měly být lépe strukturované (JSON místo simple-array)
 }
 

@@ -33,10 +33,12 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 interface RootNavigatorProps {
   isAuthenticated?: boolean;
+  onAuthenticated?: () => void;
 }
 
-export const RootNavigator: React.FC<RootNavigatorProps> = ({ 
-  isAuthenticated = false 
+export const RootNavigator: React.FC<RootNavigatorProps> = ({
+  isAuthenticated = false,
+  onAuthenticated,
 }) => {
   return (
     <Stack.Navigator
@@ -47,8 +49,8 @@ export const RootNavigator: React.FC<RootNavigatorProps> = ({
       {isAuthenticated ? (
         <>
           <Stack.Screen name="Main" component={MainNavigator} />
-          <Stack.Screen 
-            name="PromotionDetail" 
+          <Stack.Screen
+            name="PromotionDetail"
             component={PromotionDetailScreen}
             options={{
               headerShown: true,
@@ -57,8 +59,8 @@ export const RootNavigator: React.FC<RootNavigatorProps> = ({
               headerTintColor: colors.text.primary,
             }}
           />
-          <Stack.Screen 
-            name="BusinessDetail" 
+          <Stack.Screen
+            name="BusinessDetail"
             component={BusinessDetailScreen}
             options={{
               headerShown: true,
@@ -69,7 +71,9 @@ export const RootNavigator: React.FC<RootNavigatorProps> = ({
           />
         </>
       ) : (
-        <Stack.Screen name="Auth" component={AuthNavigator} />
+        <Stack.Screen name="Auth">
+          {() => <AuthNavigator onAuthenticated={onAuthenticated} />}
+        </Stack.Screen>
       )}
     </Stack.Navigator>
   );

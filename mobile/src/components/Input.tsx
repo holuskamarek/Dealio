@@ -3,7 +3,7 @@
  * Pro dark theme (Login/Register) i light theme
  */
 
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 import {
   View,
   TextInput,
@@ -27,6 +27,7 @@ interface InputProps {
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   error?: string;
   label?: string;
+  leftIcon?: ReactNode;
   style?: ViewStyle;
   inputStyle?: TextStyle;
 }
@@ -41,6 +42,7 @@ export const Input: React.FC<InputProps> = ({
   autoCapitalize = 'none',
   error,
   label,
+  leftIcon,
   style,
   inputStyle,
 }) => {
@@ -89,6 +91,11 @@ export const Input: React.FC<InputProps> = ({
         </Text>
       )}
       <View style={containerStyle}>
+        {leftIcon && (
+          <View style={{ marginRight: spacing.sm }}>
+            {leftIcon}
+          </View>
+        )}
         <TextInput
           style={[textInputStyle, inputStyle]}
           placeholder={placeholder}
