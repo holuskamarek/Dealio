@@ -50,6 +50,8 @@ temp/
 
 # Local development notes
 DEVELOPMENT_LOG.md
+NOTES.md
+NOTES_*.md
 
 # Manual testing & documentation
 tests/
