@@ -13,21 +13,23 @@ import {
   Platform,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { User, Mail, Lock } from 'lucide-react-native';
 import { AuthStackParamList } from '../navigation/types';
 import { Input, Button } from '../components';
 import { colors, typography, spacing } from '../theme';
+import { useAuth } from '../context';
 
 type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
 
 interface RegisterScreenProps {
   navigation: RegisterScreenNavigationProp;
-  onRegister?: () => void;
 }
 
-export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation, onRegister }) => {
+export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
+  const { register } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,12 +39,19 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation, onRe
   const iconSize = 22;
 
   const handleRegister = async () => {
+    if (!name || !email || !password) {
+      Alert.alert('Chyba', 'Vyplň všechna pole');
+      return;
+    }
+
     setIsLoading(true);
-    // TODO: Udelat opravdovou registration logiku
-    setTimeout(() => {
+    try {
+      await register(name, email, password);
+    } catch (error: any) {
+      Alert.alert('Chyba registrace', error.message || 'Něco se pokazilo');
+    } finally {
       setIsLoading(false);
-      onRegister?.();
-    }, 1000);
+    }
   };
 
   const handleLogin = () => {

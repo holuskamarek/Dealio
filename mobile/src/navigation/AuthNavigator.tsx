@@ -12,11 +12,7 @@ import { colors } from '../theme';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
-interface AuthNavigatorProps {
-  onAuthenticated?: () => void;
-}
-
-export const AuthNavigator: React.FC<AuthNavigatorProps> = ({ onAuthenticated }) => {
+export const AuthNavigator: React.FC = () => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -24,12 +20,8 @@ export const AuthNavigator: React.FC<AuthNavigatorProps> = ({ onAuthenticated })
         contentStyle: { backgroundColor: colors.dark.background },
       }}
     >
-      <Stack.Screen name="Login">
-        {(props) => <LoginScreen {...props} onLogin={onAuthenticated} />}
-      </Stack.Screen>
-      <Stack.Screen name="Register">
-        {(props) => <RegisterScreen {...props} onRegister={onAuthenticated} />}
-      </Stack.Screen>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
     </Stack.Navigator>
   );
 };

@@ -7,7 +7,8 @@ import { storage } from '../utils/storage';
 import { ApiError } from './types';
 
 // Base URL pro API
-const API_URL = 'http://localhost:3000';
+// Použij IP adresu počítače místo localhost (localhost nefunguje z telefonu)
+const API_URL = 'http://192.168.0.125:3000';
 
 /**
  * Hlavní funkce pro API požadavky
@@ -43,7 +44,7 @@ export async function apiRequest<T>(
   // Zpracovat odpověď
   const data = await response.json();
 
-  // Pokud není OK, vyhodit chybu
+  // Pokud není OK vyhodit chybu
   if (!response.ok) {
     const error: ApiError = {
       message: data.message || 'Něco se pokazilo',

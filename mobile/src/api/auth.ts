@@ -1,6 +1,6 @@
 /**
  * CrowdEase Auth API
- * Funkce pro autentizaci (login, register, logout)
+ * Funkce pro autentizaci
  */
 
 import { apiClient } from './client';
@@ -26,7 +26,7 @@ export async function login(
   const response = await apiClient.post<AuthResponse>('/auth/login', data);
 
   // Uložit token a uživatele
-  await storage.setToken(response.accessToken);
+  await storage.setToken(response.access_token);
   await storage.setUser(response.user);
 
   return response;
@@ -48,7 +48,7 @@ export async function register(
   const response = await apiClient.post<AuthResponse>('/auth/register', data);
 
   // Uložit token a uživatele
-  await storage.setToken(response.accessToken);
+  await storage.setToken(response.access_token);
   await storage.setUser(response.user);
 
   return response;

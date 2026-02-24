@@ -17,7 +17,9 @@ export interface RegisterRequest {
 }
 
 export interface AuthResponse {
-  accessToken: string;
+  success: boolean;
+  message: string;
+  access_token: string;
   user: User;
 }
 
@@ -38,7 +40,7 @@ export interface ApiError {
 }
 
 
-// Promotion Types (pro budoucí použití)
+// Promotion Types 
 export interface Promotion {
   id: string;
   title: string;

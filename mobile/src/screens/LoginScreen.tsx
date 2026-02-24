@@ -13,21 +13,23 @@ import {
   Platform,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Mail, Lock } from 'lucide-react-native';
 import { AuthStackParamList } from '../navigation/types';
 import { Input, Button } from '../components';
 import { colors, typography, spacing } from '../theme';
+import { useAuth } from '../context';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
 interface LoginScreenProps {
   navigation: LoginScreenNavigationProp;
-  onLogin?: () => void;
 }
 
-export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin }) => {
+export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -36,12 +38,19 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation, onLogin })
   const iconSize = 22;
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Chyba', 'Vyplň email a heslo');
+      return;
+    }
+
     setIsLoading(true);
-    // TODO: Udelat login logiku
-    setTimeout(() => {
+    try {
+      await login(email, password);
+    } catch (error: any) {
+      Alert.alert('Chyba přihlášení', error.message || 'Něco se pokazilo');
+    } finally {
       setIsLoading(false);
-      onLogin?.();
-    }, 1000);
+    }
   };
 
   const handleForgotPassword = () => {

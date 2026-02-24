@@ -33,12 +33,10 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 interface RootNavigatorProps {
   isAuthenticated?: boolean;
-  onAuthenticated?: () => void;
 }
 
 export const RootNavigator: React.FC<RootNavigatorProps> = ({
   isAuthenticated = false,
-  onAuthenticated,
 }) => {
   return (
     <Stack.Navigator
@@ -71,9 +69,7 @@ export const RootNavigator: React.FC<RootNavigatorProps> = ({
           />
         </>
       ) : (
-        <Stack.Screen name="Auth">
-          {() => <AuthNavigator onAuthenticated={onAuthenticated} />}
-        </Stack.Screen>
+        <Stack.Screen name="Auth" component={AuthNavigator} />
       )}
     </Stack.Navigator>
   );
