@@ -40,23 +40,46 @@ export interface ApiError {
 }
 
 
-// Promotion Types 
+// Promotion Types
 export interface Promotion {
   id: string;
+  business_id: string;
   title: string;
-  description: string;
-  discount: number;
-  validFrom: string;
-  validTo: string;
-  businessId: string;
+  description?: string;
+  discount_percent: number;
+  start_datetime: string;
+  end_datetime: string;
+  target_hours?: string[];
+  limit?: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
   business?: Business;
 }
 
 export interface Business {
   id: string;
   name: string;
-  description: string;
   address: string;
-  imageUrl?: string;
+  type: 'kavárna' | 'bistro' | 'restaurace' | 'bar' | 'cukrárna' | 'jiné';
+  owner_id: string;
+  phone?: string;
+  website?: string;
+  description?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// API List Response
+export interface ApiListResponse<T> {
+  success: boolean;
+  data: T[];
+  count: number;
+}
+
+// API Detail Response
+export interface ApiDetailResponse<T> {
+  success: boolean;
+  data: T;
 }
 

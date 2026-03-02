@@ -17,6 +17,14 @@ export {
   getStoredUser,
 } from './auth';
 
+// Promotions API
+export { promotionsApi } from './promotions';
+export {
+  getPromotions,
+  getActivePromotions,
+  getPromotion,
+} from './promotions';
+
 // Types
 export type {
   LoginRequest,
@@ -26,5 +34,7 @@ export type {
   ApiError,
   Promotion,
   Business,
+  ApiListResponse,
+  ApiDetailResponse,
 } from './types';
 

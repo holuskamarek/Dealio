@@ -9,8 +9,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Compass, Heart, Ticket, CircleUser } from 'lucide-react-native';
 import { MainTabParamList } from './types';
 import { colors, typography } from '../theme';
+import { HomeScreen } from '../screens';
 
-// Placeholder screeny
+// Placeholder screeny (budou nahrazeny)
 const PlaceholderScreen = ({ title }: { title: string }) => (
   <View style={styles.placeholder}>
     <Text style={styles.placeholderText}>{title}</Text>
@@ -18,7 +19,6 @@ const PlaceholderScreen = ({ title }: { title: string }) => (
   </View>
 );
 
-const HomeScreen = () => <PlaceholderScreen title="Home" />;
 const FavoritesScreen = () => <PlaceholderScreen title="Oblíbené" />;
 const RedeemedScreen = () => <PlaceholderScreen title="Uplatněné" />;
 const ProfileScreen = () => <PlaceholderScreen title="Profil" />;

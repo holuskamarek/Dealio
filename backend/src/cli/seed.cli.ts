@@ -8,9 +8,9 @@ async function bootstrap() {
 
   try {
     await seedService.seed();
-    console.log('✅ Seed skončil úspěšně');
+    console.log('Seed skončil úspěšně');
   } catch (error) {
-    console.error('❌ Chyba při seeding:', error);
+    console.error('Chyba při seeding:', error);
   } finally {
     await app.close();
   }
