@@ -5,28 +5,19 @@
 
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, Text, StyleSheet } from 'react-native';
 import { RootStackParamList } from './types';
 import { AuthNavigator } from './AuthNavigator';
 import { MainNavigator } from './MainNavigator';
-import { colors } from '../theme';
+import { PromotionDetailScreen } from '../screens/PromotionDetailScreen';
+import { colors, typography } from '../theme';
 
-// Placeholder pro detail obrazovky
-import { View, Text, StyleSheet } from 'react-native';
-import { typography } from '../theme';
-
-const PlaceholderDetailScreen = ({ route, title }: { route: any; title: string }) => (
-  <View style={styles.placeholder}>
-    <Text style={styles.placeholderText}>{title}</Text>
-    <Text style={styles.placeholderSubtext}>ID: {route.params?.promotionId || route.params?.businessId}</Text>
-  </View>
-);
-
-const PromotionDetailScreen = ({ route }: any) => (
-  <PlaceholderDetailScreen route={route} title="Detail akce" />
-);
-
+// Placeholder pro business detail (zatím)
 const BusinessDetailScreen = ({ route }: any) => (
-  <PlaceholderDetailScreen route={route} title="Detail podniku" />
+  <View style={styles.placeholder}>
+    <Text style={styles.placeholderText}>Detail podniku</Text>
+    <Text style={styles.placeholderSubtext}>ID: {route.params?.businessId}</Text>
+  </View>
 );
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

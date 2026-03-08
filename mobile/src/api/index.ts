@@ -25,6 +25,10 @@ export {
   getPromotion,
 } from './promotions';
 
+// Redemptions API
+export { redemptionsApi } from './redemptions';
+export { createRedemption } from './redemptions';
+
 // Types
 export type {
   LoginRequest,
@@ -34,6 +38,8 @@ export type {
   ApiError,
   Promotion,
   Business,
+  Redemption,
+  CreateRedemptionResponse,
   ApiListResponse,
   ApiDetailResponse,
 } from './types';

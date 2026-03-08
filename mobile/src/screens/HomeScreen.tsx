@@ -14,10 +14,13 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MapPin, Search } from 'lucide-react-native';
 import { promotionsApi, Promotion } from '../api';
 import { PromotionCard } from '../components';
 import { colors, typography, spacing } from '../theme';
+import { RootStackParamList } from '../navigation/types';
 
 /**
  * Mapování business type → kategorie pro zobrazení
@@ -56,7 +59,10 @@ const groupByCategory = (promotions: Promotion[]): CategorySection[] => {
     .map((cat) => ({ category: cat, promotions: groups[cat] }));
 };
 
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
 export const HomeScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -94,8 +100,7 @@ export const HomeScreen: React.FC = () => {
   }, []);
 
   const handlePromotionPress = (promotion: Promotion) => {
-    // TODO: Navigace na detail akce
-    console.log('Kliknuto na akci:', promotion.title);
+    navigation.navigate('PromotionDetail', { promotionId: promotion.id });
   };
 
   // Loading stav

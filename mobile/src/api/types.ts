@@ -66,6 +66,7 @@ export interface Business {
   phone?: string;
   website?: string;
   description?: string;
+  opening_hours?: Record<string, { open: string; close: string }>;
   created_at: string;
   updated_at: string;
 }
@@ -81,5 +82,30 @@ export interface ApiListResponse<T> {
 export interface ApiDetailResponse<T> {
   success: boolean;
   data: T;
+}
+
+// Redemption Types
+export interface Redemption {
+  id: string;
+  promotion_id: string;
+  user_id: string;
+  pin_code: string;
+  is_used: boolean;
+  used_at?: string;
+  created_at: string;
+  updated_at: string;
+  promotion?: Promotion;
+  user?: User;
+}
+
+export interface CreateRedemptionResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    pin_code: string;
+    promotion_id: string;
+    created_at: string;
+  };
 }
 
