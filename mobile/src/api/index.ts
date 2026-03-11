@@ -29,6 +29,17 @@ export {
 export { redemptionsApi } from './redemptions';
 export { createRedemption } from './redemptions';
 
+// Saved Promotions API
+export { savedPromotionsApi } from './follows';
+export {
+  savePromotion,
+  unsavePromotion,
+  getSavedPromotions,
+  getSavedPromotionIds,
+  toggleSave,
+} from './follows';
+export type { SavedPromotion, SavedPromotionsResponse } from './follows';
+
 // Types
 export type {
   LoginRequest,

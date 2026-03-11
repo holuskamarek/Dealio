@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import { Heart } from 'lucide-react-native';
 import { Promotion } from '../api/types';
 import { colors, spacing } from '../theme';
 
@@ -22,6 +23,8 @@ export const CARD_HEIGHT = CARD_WIDTH * 1.1;
 interface PromotionCardProps {
   promotion: Promotion;
   onPress?: (promotion: Promotion) => void;
+  isSaved?: boolean;
+  onToggleSave?: (promotionId: string) => void;
 }
 
 /**
@@ -40,9 +43,20 @@ const getPlaceholderColor = (type?: string): string => {
   return PLACEHOLDER_COLORS[type || 'jiné'] || colors.cardPlaceholder.blue;
 };
 
-export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, onPress }) => {
+export const PromotionCard: React.FC<PromotionCardProps> = ({
+  promotion,
+  onPress,
+  isSaved = false,
+  onToggleSave,
+}) => {
   const business = promotion.business;
   const placeholderColor = getPlaceholderColor(business?.type);
+
+  const handleHeartPress = () => {
+    if (onToggleSave) {
+      onToggleSave(promotion.id);
+    }
+  };
 
   return (
     <TouchableOpacity
@@ -52,7 +66,21 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({ promotion, onPress
     >
       {/* Obrázek / placeholder */}
       <View style={[styles.imageArea, { backgroundColor: placeholderColor }]}>
-        {/* TODO: Až budou obrázky, zobrazit Image místo placeholder */}
+        {/* Srdíčko pro uložení akce */}
+        {onToggleSave && (
+          <TouchableOpacity
+            style={styles.heartButton}
+            onPress={handleHeartPress}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Heart
+              size={22}
+              color={colors.white}
+              fill={isSaved ? colors.primary.coral : 'transparent'}
+              strokeWidth={2}
+            />
+          </TouchableOpacity>
+        )}
 
         {/* Gradient overlay pro čitelnost textu */}
         <View style={styles.gradient}>
@@ -83,6 +111,15 @@ const styles = StyleSheet.create({
   imageArea: {
     flex: 1,
     justifyContent: 'flex-end',
+  },
+  heartButton: {
+    position: 'absolute',
+    top: spacing.sm,
+    right: spacing.sm,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 20,
+    padding: 6,
+    zIndex: 10,
   },
   gradient: {
     paddingTop: 40,

@@ -39,27 +39,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      // Zkusit získat uloženého uživatele
-      const storedUser = await authApi.getStoredUser();
+      // Zkontroluj jestli máme token
+      const token = await storage.getToken();
 
-      if (storedUser) {
-        // Máme uloženého uživatele, ověříme token voláním /auth/me
-        const token = await storage.getToken();
-        if (token) {
-          try {
-            // Ověříme, že token je stále platný
-            await authApi.getMe();
-            setUser(storedUser);
-          } catch {
-            // Token je neplatný -> vymazat a zobrazit login
-            console.log('Token expired or invalid, clearing...');
-            await storage.clear();
-          }
-        }
+      if (!token) {
+        // Žádný token = nepřihlášen
+        setUser(null);
+        return;
+      }
+
+      // Máme token, ověříme ho voláním /auth/me
+      try {
+        const validatedUser = await authApi.getMe();
+        setUser(validatedUser);
+      } catch (error: any) {
+        // Token je neplatný (401) nebo jiná chyba -> vymazat a zobrazit login
+        console.log('Token invalid, clearing session:', error?.message || error);
+        await storage.clear();
+        setUser(null);
       }
     } catch (error) {
       console.log('Auth check failed:', error);
       await storage.clear();
+      setUser(null);
     } finally {
       setIsLoading(false);
     }

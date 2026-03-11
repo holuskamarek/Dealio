@@ -66,18 +66,18 @@ export async function logout(): Promise<void> {
  * Získat aktuálního přihlášeného uživatele
  * @returns User nebo null pokud není přihlášen
  */
-export async function getMe(): Promise<User | null> {
-  try {
-    const user = await apiClient.get<User>('/auth/me');
+export async function getMe(): Promise<User> {
+  const response = await apiClient.get<{ data: User }>('/auth/me');
+  const user = response.data;
+  // Ulozit pouze pokud user existuje
+  if (user) {
     await storage.setUser(user);
-    return user;
-  } catch {
-    return null;
   }
+  return user;
 }
 
 /**
- * Zkontrolovat jestli je uživatel přihlášen
+ * Zkontrolovat jestli je uživatel přihlasenej
  * @returns true pokud má uložený token
  */
 export async function isLoggedIn(): Promise<boolean> {

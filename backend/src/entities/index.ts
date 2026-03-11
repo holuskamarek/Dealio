@@ -4,4 +4,5 @@ export { Promotion } from './promotion.entity';
 export { Event } from './event.entity';
 export { Redemption } from './redemption.entity';
 export { Follow } from './follow.entity';
+export { SavedPromotion } from './saved-promotion.entity';
 

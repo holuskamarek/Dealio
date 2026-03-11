@@ -14,10 +14,10 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MapPin, Search } from 'lucide-react-native';
-import { promotionsApi, Promotion } from '../api';
+import { promotionsApi, savedPromotionsApi, Promotion } from '../api';
 import { PromotionCard } from '../components';
 import { colors, typography, spacing } from '../theme';
 import { RootStackParamList } from '../navigation/types';
@@ -64,6 +64,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const [promotions, setPromotions] = useState<Promotion[]>([]);
+  const [savedPromotionIds, setSavedPromotionIds] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,14 +72,26 @@ export const HomeScreen: React.FC = () => {
   const categories = useMemo(() => groupByCategory(promotions), [promotions]);
 
   useEffect(() => {
-    loadPromotions();
+    loadData();
   }, []);
 
-  const loadPromotions = async () => {
+  // Reload ulozenych akci pri kazdem fokusu )
+  useFocusEffect(
+    useCallback(() => {
+      reloadSavedIds();
+    }, [])
+  );
+
+  const loadData = async () => {
     try {
       setError(null);
-      const response = await promotionsApi.getPromotions();
-      setPromotions(response.data);
+      // Nacti akce a ulozene akce paralelne
+      const [promotionsRes, savedIds] = await Promise.all([
+        promotionsApi.getPromotions(),
+        savedPromotionsApi.getSavedPromotionIds().catch(() => []),
+      ]);
+      setPromotions(promotionsRes.data);
+      setSavedPromotionIds(new Set(savedIds));
     } catch (err: any) {
       setError(err.message || 'Nepodařilo se načíst akce');
     } finally {
@@ -86,18 +99,61 @@ export const HomeScreen: React.FC = () => {
     }
   };
 
+  const reloadSavedIds = async () => {
+    try {
+      const savedIds = await savedPromotionsApi.getSavedPromotionIds();
+      setSavedPromotionIds(new Set(savedIds));
+    } catch {
+      // Tichy fail - data uz mame z loadData
+    }
+  };
+
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
     try {
       setError(null);
-      const response = await promotionsApi.getPromotions();
-      setPromotions(response.data);
+      const [promotionsRes, savedIds] = await Promise.all([
+        promotionsApi.getPromotions(),
+        savedPromotionsApi.getSavedPromotionIds().catch(() => []),
+      ]);
+      setPromotions(promotionsRes.data);
+      setSavedPromotionIds(new Set(savedIds));
     } catch (err: any) {
       setError(err.message || 'Nepodařilo se načíst akce');
     } finally {
       setIsRefreshing(false);
     }
   }, []);
+
+  const handleToggleSave = useCallback(async (promotionId: string) => {
+    const isCurrentlySaved = savedPromotionIds.has(promotionId);
+
+    // Optimisticky update
+    setSavedPromotionIds((prev) => {
+      const next = new Set(prev);
+      if (isCurrentlySaved) {
+        next.delete(promotionId);
+      } else {
+        next.add(promotionId);
+      }
+      return next;
+    });
+
+    try {
+      await savedPromotionsApi.toggleSave(promotionId, isCurrentlySaved);
+    } catch (err) {
+      // Revert pri chybe
+      setSavedPromotionIds((prev) => {
+        const next = new Set(prev);
+        if (isCurrentlySaved) {
+          next.add(promotionId);
+        } else {
+          next.delete(promotionId);
+        }
+        return next;
+      });
+    }
+  }, [savedPromotionIds]);
 
   const handlePromotionPress = (promotion: Promotion) => {
     navigation.navigate('PromotionDetail', { promotionId: promotion.id });
@@ -117,7 +173,7 @@ export const HomeScreen: React.FC = () => {
     return (
       <View style={styles.centered}>
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity onPress={loadPromotions}>
+        <TouchableOpacity onPress={loadData}>
           <Text style={styles.retryText}>Zkusit znovu</Text>
         </TouchableOpacity>
       </View>
@@ -178,6 +234,8 @@ export const HomeScreen: React.FC = () => {
               <PromotionCard
                 promotion={item}
                 onPress={handlePromotionPress}
+                isSaved={savedPromotionIds.has(item.id)}
+                onToggleSave={handleToggleSave}
               />
             )}
           />

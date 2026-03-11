@@ -18,9 +18,10 @@ import { User } from '../../entities/user.entity';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const secret = configService.get<string>('JWT_SECRET') || 'your_super_secret_jwt_key_change_in_production';
+        const expiresIn = configService.get<string>('JWT_EXPIRATION') || '24h';
         return {
           secret,
-          signOptions: { expiresIn: configService.get<string>('JWT_EXPIRATION') || '24h' },
+          signOptions: { expiresIn: expiresIn as any },
         };
       },
       inject: [ConfigService],

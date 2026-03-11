@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { FollowsModule } from './modules/follows/follows.module';
 import { RedemptionsModule } from './modules/redemptions/redemptions.module';
 import { EventsModule } from './modules/events/events.module';
+import { SavedPromotionsModule } from './modules/saved-promotions/saved-promotions.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { EventsModule } from './modules/events/events.module';
         entities.Event,
         entities.Redemption,
         entities.Follow,
+        entities.SavedPromotion,
       ],
       synchronize: process.env.NODE_ENV === 'development',
       logging: process.env.NODE_ENV === 'development',
@@ -48,6 +50,7 @@ import { EventsModule } from './modules/events/events.module';
     FollowsModule,
     RedemptionsModule,
     EventsModule,
+    SavedPromotionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
