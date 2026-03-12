@@ -27,7 +27,12 @@ export {
 
 // Redemptions API
 export { redemptionsApi } from './redemptions';
-export { createRedemption } from './redemptions';
+export {
+  createRedemption,
+  getMyRedemptions,
+  getActiveRedemptions,
+  getUsedRedemptions,
+} from './redemptions';
 
 // Saved Promotions API
 export { savedPromotionsApi } from './follows';

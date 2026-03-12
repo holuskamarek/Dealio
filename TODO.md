@@ -26,8 +26,8 @@ Na co nesmis zapomenout ty trotle.
 - [ ] GET /promotions/business/:id
 
 
-- [ ] Favorites tab
-- [ ] Redeemed tab (historie)
+- [x] Favorites tab
+- [x] Redeemed tab
 - [ ] Profile screen (logout, nastavení)
 - [ ] Search
 - [ ] Filtry (kategorie, vzdálenost, sleva)

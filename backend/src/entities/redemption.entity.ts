@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Promotion } from './promotion.entity';
 import { User } from './user.entity';
@@ -37,9 +38,11 @@ export class Redemption {
 
   // Relations
   @ManyToOne(() => Promotion, (promotion) => promotion.redemptions)
+  @JoinColumn({ name: 'promotion_id' })
   promotion!: Promotion;
 
   @ManyToOne(() => User, (user) => user.redemptions)
+  @JoinColumn({ name: 'user_id' })
   user!: User;
 
   // TODO: Přidat expiraci PIN kódu
