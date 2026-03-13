@@ -5,21 +5,10 @@
 
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet } from 'react-native';
 import { Compass, Heart, Ticket, CircleUser } from 'lucide-react-native';
 import { MainTabParamList } from './types';
-import { colors, typography } from '../theme';
-import { HomeScreen, FavoritesScreen, RedeemedScreen } from '../screens';
-
-// Placeholder screeny (budou nahrazeny)
-const PlaceholderScreen = ({ title }: { title: string }) => (
-  <View style={styles.placeholder}>
-    <Text style={styles.placeholderText}>{title}</Text>
-    <Text style={styles.placeholderSubtext}>Bude implementováno</Text>
-  </View>
-);
-
-const ProfileScreen = () => <PlaceholderScreen title="Profil" />;
+import { colors } from '../theme';
+import { HomeScreen, FavoritesScreen, RedeemedScreen, ProfileScreen } from '../screens';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -81,22 +70,4 @@ export const MainNavigator: React.FC = () => {
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  placeholder: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.light.background,
-  },
-  placeholderText: {
-    ...typography.h1,
-    color: colors.text.primary,
-    marginBottom: 8,
-  },
-  placeholderSubtext: {
-    ...typography.body,
-    color: colors.text.secondary,
-  },
-});
 

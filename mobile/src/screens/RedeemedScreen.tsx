@@ -1,9 +1,9 @@
 /**
- * Dealio Redeemed Screen
+ * CrowdEase Redeemed Screen
  * Seznam uplatnenych akci 
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,15 +12,24 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { CheckCircle, SlidersHorizontal, Search, Ticket } from 'lucide-react-native';
+import { CheckCircle, SlidersHorizontal, Search, Ticket, X } from 'lucide-react-native';
 import { redemptionsApi, Redemption } from '../api';
 import { colors, typography, spacing } from '../theme';
 import { RootStackParamList } from '../navigation/types';
 import { MainTabParamList } from '../navigation/types';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+
+// Typy řazení
+type SortOption = 'newest' | 'oldest' | 'name';
+const SORT_LABELS: Record<SortOption, string> = {
+  newest: 'Nejnovější',
+  oldest: 'Nejstarší',
+  name: 'Podle názvu',
+};
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type TabNavigationProp = BottomTabNavigationProp<MainTabParamList>;
@@ -103,6 +112,43 @@ export const RedeemedScreen: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Search & Sort state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [showSortMenu, setShowSortMenu] = useState(false);
+
+  // Filtrované a seřazené redemptions
+  const filteredAndSortedRedemptions = useMemo(() => {
+    let result = [...redemptions];
+
+    // Filtr podle search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      result = result.filter((item) => {
+        const title = item.promotion?.title?.toLowerCase() || '';
+        const businessName = item.promotion?.business?.name?.toLowerCase() || '';
+        return title.includes(query) || businessName.includes(query);
+      });
+    }
+
+    // Řazení
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case 'newest':
+          return new Date(b.used_at || b.created_at).getTime() - new Date(a.used_at || a.created_at).getTime();
+        case 'oldest':
+          return new Date(a.used_at || a.created_at).getTime() - new Date(b.used_at || b.created_at).getTime();
+        case 'name':
+          return (a.promotion?.business?.name || '').localeCompare(b.promotion?.business?.name || '');
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [redemptions, searchQuery, sortBy]);
+
   // Reload pri kazdem fokusu na screen
   useFocusEffect(
     useCallback(() => {
@@ -180,18 +226,70 @@ export const RedeemedScreen: React.FC = () => {
         </View>
       ) : (
         <>
+          {/* Search Bar */}
+          {isSearchActive && (
+            <View style={styles.searchContainer}>
+              <View style={styles.searchInputWrapper}>
+                <Search size={18} color={colors.text.tertiary} />
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="Hledat v uplatněných..."
+                  placeholderTextColor={colors.text.tertiary}
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  autoFocus
+                />
+                {searchQuery.length > 0 && (
+                  <TouchableOpacity onPress={() => setSearchQuery('')}>
+                    <X size={18} color={colors.text.tertiary} />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          )}
+
           {/* Filter a search row */}
           <View style={styles.toolbarRow}>
-            <TouchableOpacity hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-              <SlidersHorizontal size={22} color={colors.text.primary} />
+            <TouchableOpacity
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              onPress={() => setShowSortMenu(!showSortMenu)}
+            >
+              <SlidersHorizontal size={22} color={sortBy !== 'newest' ? colors.primary.main : colors.text.primary} />
             </TouchableOpacity>
-            <TouchableOpacity hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-              <Search size={22} color={colors.text.primary} />
+            <TouchableOpacity
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              onPress={() => setIsSearchActive(!isSearchActive)}
+            >
+              {isSearchActive ? (
+                <X size={22} color={colors.primary.main} />
+              ) : (
+                <Search size={22} color={colors.text.primary} />
+              )}
             </TouchableOpacity>
           </View>
 
+          {/* Sort Menu */}
+          {showSortMenu && (
+            <View style={styles.sortMenu}>
+              {(Object.keys(SORT_LABELS) as SortOption[]).map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  style={[styles.sortOption, sortBy === option && styles.sortOptionActive]}
+                  onPress={() => {
+                    setSortBy(option);
+                    setShowSortMenu(false);
+                  }}
+                >
+                  <Text style={[styles.sortOptionText, sortBy === option && styles.sortOptionTextActive]}>
+                    {SORT_LABELS[option]}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
           <FlatList
-            data={redemptions}
+            data={filteredAndSortedRedemptions}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.list}
             refreshControl={
@@ -207,6 +305,13 @@ export const RedeemedScreen: React.FC = () => {
                 onPress={handlePromotionPress}
               />
             )}
+            ListEmptyComponent={
+              searchQuery ? (
+                <View style={styles.noResults}>
+                  <Text style={styles.noResultsText}>Žádné výsledky pro "{searchQuery}"</Text>
+                </View>
+              ) : null
+            }
           />
         </>
       )}
@@ -246,12 +351,69 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary.main,
     borderRadius: 2,
   },
+  // Search
+  searchContainer: {
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.sm,
+  },
+  searchInputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderWidth: 1,
+    borderColor: colors.border.light,
+    gap: 8,
+  },
+  searchInput: {
+    flex: 1,
+    ...typography.body,
+    color: colors.text.primary,
+    paddingVertical: spacing.xs,
+  },
   toolbarRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
+  },
+  // Sort menu
+  sortMenu: {
+    backgroundColor: colors.white,
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.sm,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border.light,
+    overflow: 'hidden',
+  },
+  sortOption: {
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border.light,
+  },
+  sortOptionActive: {
+    backgroundColor: colors.primary.main + '15',
+  },
+  sortOptionText: {
+    ...typography.body,
+    color: colors.text.primary,
+  },
+  sortOptionTextActive: {
+    color: colors.primary.main,
+    fontWeight: '600',
+  },
+  noResults: {
+    paddingVertical: spacing.xl,
+    alignItems: 'center',
+  },
+  noResultsText: {
+    ...typography.body,
+    color: colors.text.tertiary,
   },
   list: {
     paddingHorizontal: spacing.md,

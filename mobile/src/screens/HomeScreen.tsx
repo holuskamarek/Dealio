@@ -13,14 +13,19 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MapPin, Search } from 'lucide-react-native';
+import { MapPin, Search, X } from 'lucide-react-native';
 import { promotionsApi, savedPromotionsApi, Promotion } from '../api';
 import { PromotionCard } from '../components';
 import { colors, typography, spacing } from '../theme';
 import { RootStackParamList } from '../navigation/types';
+
+// Dostupné kategorie pro filtrování
+const FILTER_CATEGORIES = ['Vše', 'Káva', 'Jídlo', 'Sladkosti', 'Nápoje', 'Ostatní'] as const;
+type FilterCategory = typeof FILTER_CATEGORIES[number];
 
 /**
  * Mapování business type → kategorie pro zobrazení
@@ -69,7 +74,38 @@ export const HomeScreen: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const categories = useMemo(() => groupByCategory(promotions), [promotions]);
+  // Search & Filter state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>('Vše');
+
+  // Filtrované akce podle search a kategorie
+  const filteredPromotions = useMemo(() => {
+    let filtered = promotions;
+
+    // Filtr podle kategorie
+    if (selectedCategory !== 'Vše') {
+      filtered = filtered.filter((promo) => {
+        const type = promo.business?.type || 'jiné';
+        const category = CATEGORY_MAP[type] || 'Ostatní';
+        return category === selectedCategory;
+      });
+    }
+
+    // Filtr podle search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter((promo) => {
+        const title = promo.title.toLowerCase();
+        const businessName = promo.business?.name?.toLowerCase() || '';
+        return title.includes(query) || businessName.includes(query);
+      });
+    }
+
+    return filtered;
+  }, [promotions, searchQuery, selectedCategory]);
+
+  const categories = useMemo(() => groupByCategory(filteredPromotions), [filteredPromotions]);
 
   useEffect(() => {
     loadData();
@@ -199,16 +235,74 @@ export const HomeScreen: React.FC = () => {
           <MapPin size={18} color={colors.primary.main} />
           <Text style={styles.locationText}>Brno</Text>
         </View>
-        <TouchableOpacity>
-          <Search size={22} color={colors.primary.main} />
+        <TouchableOpacity onPress={() => setIsSearchActive(!isSearchActive)}>
+          {isSearchActive ? (
+            <X size={22} color={colors.primary.main} />
+          ) : (
+            <Search size={22} color={colors.primary.main} />
+          )}
         </TouchableOpacity>
       </View>
 
+      {/* Search Bar */}
+      {isSearchActive && (
+        <View style={styles.searchContainer}>
+          <View style={styles.searchInputWrapper}>
+            <Search size={18} color={colors.text.tertiary} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Hledat akce nebo podniky..."
+              placeholderTextColor={colors.text.tertiary}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchQuery('')}>
+                <X size={18} color={colors.text.tertiary} />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      )}
+
+      {/* Filter Chips */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filterRow}
+        style={styles.filterContainer}
+      >
+        {FILTER_CATEGORIES.map((cat) => (
+          <TouchableOpacity
+            key={cat}
+            style={[
+              styles.filterChip,
+              selectedCategory === cat && styles.filterChipActive,
+            ]}
+            onPress={() => setSelectedCategory(cat)}
+          >
+            <Text
+              style={[
+                styles.filterChipText,
+                selectedCategory === cat && styles.filterChipTextActive,
+              ]}
+            >
+              {cat}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
       {/* Hlavní nadpis */}
       <View style={styles.titleSection}>
-        <Text style={styles.mainTitle}>Nejbližší nabídky v okolí</Text>
+        <Text style={styles.mainTitle}>
+          {selectedCategory === 'Vše' ? 'Nejbližší nabídky v okolí' : selectedCategory}
+        </Text>
         <Text style={styles.mainSubtitle}>
-          Exkluzivní slevy, oblíbené podniky.
+          {searchQuery
+            ? `Výsledky pro "${searchQuery}"`
+            : 'Exkluzivní slevy, oblíbené podniky.'}
         </Text>
       </View>
 
@@ -289,6 +383,58 @@ const styles = StyleSheet.create({
     ...typography.callout,
     color: colors.text.primary,
     fontWeight: '600',
+  },
+
+  // Search
+  searchContainer: {
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.sm,
+  },
+  searchInputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderWidth: 1,
+    borderColor: colors.border.light,
+    gap: 8,
+  },
+  searchInput: {
+    flex: 1,
+    ...typography.body,
+    color: colors.text.primary,
+    paddingVertical: spacing.xs,
+  },
+
+  // Filter chips
+  filterContainer: {
+    marginBottom: spacing.sm,
+  },
+  filterRow: {
+    paddingHorizontal: spacing.md,
+    gap: 8,
+  },
+  filterChip: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: 20,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.border.light,
+  },
+  filterChipActive: {
+    backgroundColor: colors.primary.main,
+    borderColor: colors.primary.main,
+  },
+  filterChipText: {
+    ...typography.callout,
+    color: colors.text.secondary,
+    fontWeight: '500',
+  },
+  filterChipTextActive: {
+    color: colors.white,
   },
 
   // Hlavní nadpis

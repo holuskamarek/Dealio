@@ -28,9 +28,9 @@ Na co nesmis zapomenout ty trotle.
 
 - [x] Favorites tab
 - [x] Redeemed tab
-- [ ] Profile screen (logout, nastavení)
-- [ ] Search
-- [ ] Filtry (kategorie, vzdálenost, sleva)
+- [x] Profile screen (logout, nastavení)
+- [x] Search (vyhledávání podle názvu akce/podniku)
+- [x] Filtry (kategorie na HomeScreen, řazení na Favorites/Redeemed)
 - [ ] Forgot password screen
 
 
