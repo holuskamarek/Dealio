@@ -15,32 +15,52 @@ export class AuthService {
 
   /**
    * Registrace nového uživatele
-   * TODO: Přidat email validaci (regex)
    * TODO: Přidat rate limiting
    */
   async register(email: string, password: string, name?: string) {
+    // Validace emailu
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      throw new BadRequestException('Neplatný formát emailu');
+    }
+
     // Zkontroluj, jestli uživatel už existuje
     const existingUser = await this.userRepository.findOne({
-      where: { email },
+      where: { email: email.toLowerCase() },
     });
 
     if (existingUser) {
       throw new BadRequestException('Uživatel s tímto emailem již existuje');
     }
 
-    // FIXME: Heslo by mělo být validováno (minimální délka, složitost)
-    if (!password || password.length < 6) {
-      throw new BadRequestException('Heslo musí mít alespoň 6 znaků');
+    // Validace hesla - minimálně 8 znaků, alespoň 1 číslo, 1 velké a 1 malé písmeno
+    if (!password || password.length < 8) {
+      throw new BadRequestException('Heslo musí mít alespoň 8 znaků');
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      throw new BadRequestException('Heslo musí obsahovat alespoň jedno velké písmeno');
+    }
+
+    if (!/[a-z]/.test(password)) {
+      throw new BadRequestException('Heslo musí obsahovat alespoň jedno malé písmeno');
+    }
+
+    if (!/[0-9]/.test(password)) {
+      throw new BadRequestException('Heslo musí obsahovat alespoň jednu číslici');
     }
 
     // Zahashuj heslo
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Normalizuj email na lowercase
+    const normalizedEmail = email.toLowerCase();
+
     // Vytvoř nového uživatele
     const user = this.userRepository.create({
-      email,
+      email: normalizedEmail,
       password_hash: hashedPassword,
-      name: name || email.split('@')[0], // Výchozí jméno z emailu
+      name: name || normalizedEmail.split('@')[0], // Výchozí jméno z emailu
       role: 'user', // Výchozí role
     });
 
@@ -55,9 +75,12 @@ export class AuthService {
    * TODO: Přidat rate limiting pro ochranu proti brute force útokům
    */
   async login(email: string, password: string) {
+    // Normalizuj email na lowercase
+    const normalizedEmail = email.toLowerCase();
+
     // Najdi uživatele
     const user = await this.userRepository.findOne({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (!user) {

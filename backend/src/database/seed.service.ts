@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { User, Business, Promotion, Event } from '../entities';
 
 @Injectable()
@@ -224,11 +225,12 @@ export class SeedService {
     name: string,
     role: 'user' | 'business_owner' | 'admin',
   ): Promise<User> {
-    // TODO: Implementovat bcrypt pro hashování hesla
-    // Teď používáme plain text - POUZE PRO VÝVOJ!
+    // Hashuj heslo pomocí bcrypt (stejně jako v auth.service.ts)
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = await this.userRepository.save({
       email,
-      password_hash: password, // FIXME: Toto by mělo být hashované!
+      password_hash: hashedPassword,
       name,
       role,
     });
