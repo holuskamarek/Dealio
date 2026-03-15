@@ -9,26 +9,29 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RedemptionsService } from './redemptions.service';
 
 /**
  * RedemptionsController - API endpointy pro uplatnění slev
- * 
+ *
  * TODO: Přidat endpoint pro statistiky redemptions
  * TODO: Přidat endpoint pro historii redemptions podniku
- * FIXME: Přidat rate limiting pro vytváření redemptions
  */
 @Controller('redemptions')
+@UseGuards(ThrottlerGuard)
 export class RedemptionsController {
   constructor(private redemptionsService: RedemptionsService) {}
 
   /**
    * POST /redemptions/promotions/:promotionId
    * Vytvořit redemption (uložit slevu) pro akci
+   * Rate limit: 10 za minutu (ochrana proti zneužití)
    */
   @Post('promotions/:promotionId')
   @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 PIN kódů za minutu
   @HttpCode(HttpStatus.CREATED)
   async createRedemption(
     @Param('promotionId') promotionId: string,
@@ -55,9 +58,11 @@ export class RedemptionsController {
   /**
    * POST /redemptions/redeem
    * Uplatnit slevu pomocí PIN kódu (pro podnik)
+   * Rate limit: 20 za minutu (ochrana proti brute-force PIN hádání)
    */
   @Post('redeem')
   @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 20, ttl: 60000 } }) // 20 pokusů za minutu
   @HttpCode(HttpStatus.OK)
   async redeemByPin(@Body('pin_code') pinCode: string, @Request() req: any) {
     const businessOwnerId = req.user.id;

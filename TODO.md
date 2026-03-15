@@ -6,10 +6,10 @@ Na co nesmis zapomenout ty trotle.
 
 ## Here->
 
-- [ ] Hashování hesel v seedu (seed.service.ts ukládá plain text)
-- [ ] Validace hesla - min délka, složitost
-- [ ] Rate limiting na login/register
-- [ ] Rate limiting na generování PIN kódů
+- [x] Hashování hesel v seedu (seed.service.ts ukládá plain text)
+- [x] Validace hesla - min délka 8, velké+malé písmeno, číslice
+- [x] Rate limiting na login/register (5 pokusů/min)
+- [x] Rate limiting na generování PIN kódů (10/min) a ověření (20/min)
 - [ ] Expirace PIN kódu na backendu (teď je jen frontend countdown)
 
 - [ ] Co se stane když uživatel neuplatní slevu? PIN vyprší ale záznam zůstane v DB

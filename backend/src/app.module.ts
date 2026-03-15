@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import * as entities from './entities';
@@ -20,6 +21,24 @@ import { SavedPromotionsModule } from './modules/saved-promotions/saved-promotio
       isGlobal: true,
       envFilePath: '.env',
     }),
+    // Rate limiting - globální konfigurace
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 1000, // 1 sekunda
+        limit: 3,  // max 3 requesty za sekundu
+      },
+      {
+        name: 'medium',
+        ttl: 10000, // 10 sekund
+        limit: 20,  // max 20 requestů za 10 sekund
+      },
+      {
+        name: 'long',
+        ttl: 60000, // 1 minuta
+        limit: 100, // max 100 requestů za minutu
+      },
+    ]),
     // TypeORM konfigurace s PostgreSQL
     TypeOrmModule.forRoot({
       type: 'postgres',

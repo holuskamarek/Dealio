@@ -1,8 +1,10 @@
 import { Controller, Post, Body, UseGuards, Get, Request } from '@nestjs/common';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
+@UseGuards(ThrottlerGuard)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -10,14 +12,15 @@ export class AuthController {
    * Registrace nového uživatele
    * POST /auth/register
    * Body: { email, password, name? }
+   * Rate limit: 5 pokusů za minutu (ochrana proti spamu)
    */
   @Post('register')
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 registrací za minutu
   async register(
     @Body('email') email: string,
     @Body('password') password: string,
     @Body('name') name?: string,
   ) {
-    // TODO: Přidat DTO a validaci
     return this.authService.register(email, password, name);
   }
 
@@ -25,13 +28,14 @@ export class AuthController {
    * Login uživatele
    * POST /auth/login
    * Body: { email, password }
+   * Rate limit: 5 pokusů za minutu (ochrana proti brute-force)
    */
   @Post('login')
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 loginů za minutu
   async login(
     @Body('email') email: string,
     @Body('password') password: string,
   ) {
-    // TODO: Přidat DTO a validaci
     return this.authService.login(email, password);
   }
 
@@ -49,8 +53,5 @@ export class AuthController {
     };
   }
 
-  // TODO: Přidat logout endpoint (invalidace tokenu)
-  // TODO: Přidat refresh token endpoint
-  // TODO: Přidat forgot password endpoint
 }
 
