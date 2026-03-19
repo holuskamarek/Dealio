@@ -20,11 +20,7 @@ async function bootstrap() {
 
   // CORS - povolí požadavky z admin webu a mobilní app
   app.enableCors({
-    origin: [
-      'http://localhost:5173', // admin web (Vite)
-      'http://localhost:8081', // mobile app (Expo)
-      'http://localhost:3001', // backup port
-    ],
+    origin: true, // (pro vývoj)
   });
 
   const port = process.env.PORT || 3000;

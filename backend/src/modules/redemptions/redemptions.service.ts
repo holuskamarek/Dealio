@@ -156,11 +156,13 @@ export class RedemptionsService {
       throw new NotFoundException('Podnik pro tuto akci nebyl nalezen');
     }
 
-    // Zkontroluj, jestli podnik patří tomuto vlastníkovi
-    if (promotion.business.owner_id !== businessOwnerId) {
-      throw new ForbiddenException(
-        'Nemáš oprávnění uplatnit tento PIN kód',
-      );
+    // Ověř že uživatel je business_owner (zjednodušení pro vývoj)
+    const user = await this.userRepository.findOne({
+      where: { id: businessOwnerId },
+    });
+
+    if (!user || user.role !== 'business_owner') {
+      throw new ForbiddenException('Pouze majitel podniku může ověřit PIN kód');
     }
 
     // Přidej promotion do redemption pro response

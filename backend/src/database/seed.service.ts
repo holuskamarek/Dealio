@@ -22,21 +22,22 @@ export class SeedService {
 
     // Najdi nebo vytvoř vlastníka podniků
     let owner = await this.userRepository.findOne({
-      where: { role: 'business_owner' },
+      where: { email: 'owner@example.com' },
     });
 
-    if (!owner) {
-      // Použij prvního uživatele jako vlastníka
-      const users = await this.userRepository.find({ take: 1 });
-      owner = users[0] || null;
-      if (!owner) {
-        owner = await this.createUser(
-          'owner@example.com',
-          'password123',
-          'Petr Čmelín',
-          'business_owner',
-        );
-      }
+    if (owner) {
+      const hashedPassword = await bcrypt.hash('password123', 10);
+      owner.password_hash = hashedPassword;
+      owner.role = 'business_owner';
+      await this.userRepository.save(owner);
+      console.log('Heslo ownera aktualizováno na hash');
+    } else {
+      owner = await this.createUser(
+        'owner@example.com',
+        'password123',
+        'Petr Čmelák',
+        'business_owner',
+      );
     }
 
     console.log(`Vlastník: ${owner.name} (${owner.email})`);

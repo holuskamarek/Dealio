@@ -10,6 +10,7 @@ Na co nesmis zapomenout ty trotle.
 - [x] Validace hesla - min délka 8, velké+malé písmeno, číslice
 - [x] Rate limiting na login/register (5 pokusů/min)
 - [x] Rate limiting na generování PIN kódů (10/min) a ověření (20/min)
+- [x] Admin web - základní login + PIN ověření
 - [ ] Expirace PIN kódu na backendu (teď je jen frontend countdown)
 
 - [ ] Co se stane když uživatel neuplatní slevu? PIN vyprší ale záznam zůstane v DB

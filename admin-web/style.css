@@ -1,0 +1,95 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #40B4C6;
+}
+
+button {
+    padding: 12px;
+    background: #40B4C6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #369DAD;
+}
+
+.error {
+    color: #e74c3c;
+    text-align: center;
+}
+
+.success {
+    color: #27ae60;
+    text-align: center;
+}
+
+.logout {
+    margin-top: 20px;
+    background: #c43737;
+    width: 100%;
+}
+
+.logout:hover {
+    background: #6d2121;
+}
+
+#pinCode {
+    text-align: center;
+    font-size: 24px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+}
+
+#result {
+    text-align: center;
+    margin-top: 10px;
+    min-height: 20px;
+}
+
