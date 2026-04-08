@@ -57,6 +57,21 @@ export class BusinessesService {
     }
   }
 
+  async findByOwner(ownerId: string) {
+    const business = await this.businessRepository.findOne({
+      where: { owner_id: ownerId },
+    });
+
+    if (!business) {
+      throw new NotFoundException('Nemáš žádný podnik');
+    }
+
+    return {
+      success: true,
+      data: business,
+    };
+  }
+
   /**
    * Vrátí podniky podle typu
    * TODO: Implementovat filtrování

@@ -16,10 +16,12 @@ export class BusinessesController {
     return this.businessesService.findAll();
   }
 
-  /**
-   * GET /businesses/:id
-   * Vrátí detail jednoho podniku
-   */
+  @UseGuards(JwtAuthGuard)
+  @Get('my')
+  async findMy(@Request() req: any) {
+    return this.businessesService.findByOwner(req.user.id);
+  }
+
   @Get(':id')
   async findById(@Param('id') id: string) {
     return this.businessesService.findById(id);
