@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import * as entities from './entities';
@@ -16,10 +18,13 @@ import { SavedPromotionsModule } from './modules/saved-promotions/saved-promotio
 
 @Module({
   imports: [
-    // Načtení .env souboru
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'admin-web'),
+      serveRoot: '/admin',
     }),
     // Rate limiting - globální konfigurace
     ThrottlerModule.forRoot([

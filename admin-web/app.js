@@ -38,13 +38,13 @@ if (loginForm) {
     if (getToken()) {
         window.location.href = 'dashboard.html';
     }
-    
+
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const error = document.getElementById('error');
-        
+
         try {
             const data = await login(email, password);
             if (data.access_token) {
@@ -64,12 +64,12 @@ if (pinForm) {
     if (!getToken()) {
         window.location.href = 'index.html';
     }
-    
+
     pinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const pinCode = document.getElementById('pinCode').value;
         const result = document.getElementById('result');
-        
+
         try {
             const data = await verifyPin(pinCode);
             if (data.success) {
@@ -85,7 +85,7 @@ if (pinForm) {
             result.textContent = 'Chyba spojení';
         }
     });
-    
+
     document.getElementById('logout').addEventListener('click', () => {
         clearToken();
         window.location.href = 'index.html';

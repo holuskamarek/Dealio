@@ -17,6 +17,10 @@ out/
 .env.local
 .env.*.local
 
+# Osobní poznámky
+*.local.md
+NOTES.md
+
 # IDE
 .vscode/
 .idea/
