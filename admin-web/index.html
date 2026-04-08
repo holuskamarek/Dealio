@@ -7,15 +7,35 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>CrowdEase Admin</h1>
-        <form id="loginForm">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Heslo" required>
-            <button type="submit">Přihlásit</button>
-            <p id="error" class="error"></p>
-        </form>
+    <div id="loginPage" class="login-page">
+        <div class="login-box">
+            <h1>CrowdEase</h1>
+            <form id="loginForm">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Heslo" required>
+                <button type="submit">Přihlásit</button>
+                <p id="error" class="error"></p>
+            </form>
+        </div>
     </div>
+
+    <div id="app" class="app hidden">
+        <aside class="sidebar">
+            <div class="sidebar-logo">CrowdEase</div>
+            <nav>
+                <a href="#dashboard" class="nav-link active" data-page="dashboard">Dashboard</a>
+                <a href="#nabidky" class="nav-link" data-page="nabidky">Nabídky</a>
+                <a href="#nova-nabidka" class="nav-link" data-page="nova-nabidka">Vytvořit nabídku</a>
+                <a href="#kalendar" class="nav-link" data-page="kalendar">Kalendář</a>
+                <a href="#nastaveni" class="nav-link" data-page="nastaveni">Nastavení</a>
+            </nav>
+            <button id="logoutBtn" class="logout-btn">Odhlásit</button>
+        </aside>
+        <main class="main">
+            <div id="pageContent"></div>
+        </main>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
