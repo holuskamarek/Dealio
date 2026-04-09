@@ -33,6 +33,8 @@ Na co nesmis zapomenout ty trotle.
 - [x] Search (vyhledávání podle názvu akce/podniku)
 - [x] Filtry (kategorie na HomeScreen, řazení na Favorites/Redeemed)
 - [ ] Forgot password screen
+- [ ] opening hours v aplikaci (zatím jen upravujeme v admin-webu)
+- [ ] Profil podniku s krátkým popisem a fotkou + lokace, cislo atd. (V budoucnu tam muzou byt i hodnoceni)
 
 
 - [ ] Obrázky v Promotion

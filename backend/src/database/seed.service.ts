@@ -54,7 +54,7 @@ export class SeedService {
     const kavarna = await this.businessRepository.save({
       name: 'Kavárna u Čmelina',
       address: 'Nádražní 12, Brno',
-      type: 'kavárna',
+      type: 'kavarna',
       owner_id: owner.id,
       phone: '+420 555 111 222',
       website: 'https://kavarna-cmelin.cz',
@@ -89,7 +89,7 @@ export class SeedService {
     const cukrarna = await this.businessRepository.save({
       name: 'Cukrárna u Čmelina',
       address: 'Česká 8, Brno',
-      type: 'cukrárna',
+      type: 'cukrarna',
       owner_id: owner.id,
       phone: '+420 555 555 666',
       description: 'Domácí zákusky, dorty na zakázku a zmrzlina',
@@ -107,7 +107,7 @@ export class SeedService {
     const bar = await this.businessRepository.save({
       name: 'Bar u Čmelina',
       address: 'Jakubská 5, Brno',
-      type: 'bar',
+      type: 'hospoda',
       owner_id: owner.id,
       phone: '+420 555 777 888',
       description: 'Koktejly, craft piva a živá hudba každý pátek',

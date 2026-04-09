@@ -24,9 +24,9 @@ export class Business {
 
   @Column({
     type: 'enum',
-    enum: ['kavárna', 'bistro', 'restaurace', 'bar', 'cukrárna', 'jiné'],
+    enum: ['kavarna', 'bistro', 'restaurace', 'pizzerie', 'cukrarna', 'hospoda', 'kvetinarstvi', 'kadernictvi', 'ostatni'],
   })
-  type!: 'kavárna' | 'bistro' | 'restaurace' | 'bar' | 'cukrárna' | 'jiné';
+  type!: 'kavarna' | 'bistro' | 'restaurace' | 'pizzerie' | 'cukrarna' | 'hospoda' | 'kvetinarstvi' | 'kadernictvi' | 'ostatni';
 
   @Column({ type: 'uuid', name: 'owner_id' })
   owner_id!: string;
