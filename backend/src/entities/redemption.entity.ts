@@ -37,7 +37,7 @@ export class Redemption {
   updated_at!: Date;
 
   // Relations
-  @ManyToOne(() => Promotion, (promotion) => promotion.redemptions)
+  @ManyToOne(() => Promotion, (promotion) => promotion.redemptions, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'promotion_id' })
   promotion!: Promotion;
 

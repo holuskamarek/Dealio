@@ -32,7 +32,7 @@ export class Event {
   timestamp!: Date;
 
   // Relations
-  @ManyToOne(() => Promotion, (promotion) => promotion.events)
+  @ManyToOne(() => Promotion, (promotion) => promotion.events, { onDelete: 'CASCADE' })
   promotion!: Promotion;
 
   @ManyToOne(() => User, (user) => user.events, { nullable: true })

@@ -62,3 +62,7 @@ tests/
 docs/
 *.postman_collection.json
 
+# Local dev scripts
+start-dev.bat
+start-dev.ps1
+

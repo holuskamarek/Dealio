@@ -15,7 +15,6 @@ export class PromotionsService {
   /**
    * Vrátí seznam všech aktivních akcí
    * TODO: Přidat filtrování podle času (jen aktuální akce)
-   * TODO: Přidat pagination
    */
   async findAll() {
     const promotions = await this.promotionRepository.find({
@@ -33,9 +32,6 @@ export class PromotionsService {
     };
   }
 
-  /**
-   * Vrátí detail jedné akce
-   */
   async findById(id: string) {
     const promotion = await this.promotionRepository.findOne({
       where: { id },
@@ -52,9 +48,7 @@ export class PromotionsService {
     };
   }
 
-  /**
-   * Vrátí akce pro konkrétní podnik
-   */
+
   async findByBusinessId(businessId: string) {
     const promotions = await this.promotionRepository.find({
       where: { business_id: businessId },
@@ -71,10 +65,24 @@ export class PromotionsService {
     };
   }
 
-  /**
-   * Vrátí aktuálně platné akce (v čase)
-   * TODO: Implementovat filtrování podle času
-   */
+
+  async findByOwner(ownerId: string) {
+    const business = await this.businessRepository.findOne({
+      where: { owner_id: ownerId },
+    });
+
+    if (!business) {
+      return {
+        success: true,
+        data: [],
+        count: 0,
+      };
+    }
+
+    return this.findByBusinessId(business.id);
+  }
+
+
   async findActive() {
     const now = new Date();
 
@@ -95,16 +103,11 @@ export class PromotionsService {
     };
   }
 
-  /**
-   * Vytvoří novou akci
-   */
   async create(data: any, user: User) {
-    // Validace je nyní v DTO (CreatePromotionDto)
     if (!data.business_id || !data.title || !data.start_datetime || !data.end_datetime) {
       throw new BadRequestException('Chybí povinná pole: business_id, title, start_datetime, end_datetime');
     }
 
-    // Zkontroluj, jestli podnik existuje a patří uživateli
     const business = await this.businessRepository.findOne({
       where: { id: data.business_id },
     });
@@ -142,11 +145,7 @@ export class PromotionsService {
     }
   }
 
-  /**
-   * Upraví existující akci
-   * Jen vlastník podniku může upravit
-   * TODO: Přidat DTO a validaci
-   */
+
   async update(id: string, data: any, user: User) {
     const promotion = await this.promotionRepository.findOne({
       where: { id },
@@ -156,7 +155,7 @@ export class PromotionsService {
       throw new NotFoundException(`Akce s ID ${id} nebyla nalezena`);
     }
 
-    // Zkontroluj, jestli je uživatel vlastník podniku
+
     const business = await this.businessRepository.findOne({
       where: { id: promotion.business_id },
     });
@@ -188,10 +187,7 @@ export class PromotionsService {
     };
   }
 
-  /**
-   * Smaže akci
-   * Jen vlastník podniku může smazat
-   */
+
   async delete(id: string, user: User) {
     const promotion = await this.promotionRepository.findOne({
       where: { id },
@@ -201,7 +197,6 @@ export class PromotionsService {
       throw new NotFoundException(`Akce s ID ${id} nebyla nalezena`);
     }
 
-    // Zkontroluj, jestli je uživatel vlastník podniku
     const business = await this.businessRepository.findOne({
       where: { id: promotion.business_id },
     });

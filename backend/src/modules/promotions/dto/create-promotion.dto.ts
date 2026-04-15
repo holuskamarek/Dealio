@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsDateString, IsArray, Min, Max, MaxLength, MinLength } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsNumber, IsDateString, IsArray, IsBoolean, Min, Max, MaxLength, MinLength } from 'class-validator';
 
 export class CreatePromotionDto {
   @IsString()
@@ -38,5 +38,9 @@ export class CreatePromotionDto {
   @IsString()
   @IsNotEmpty({ message: 'ID podniku je povinné' })
   business_id!: string;
+
+  @IsBoolean()
+  @IsOptional()
+  is_active?: boolean;
 }
 
