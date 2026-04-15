@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { CheckCircle, SlidersHorizontal, Search, Ticket, X } from 'lucide-react-native';
+import { Check, SlidersHorizontal, Search, Ticket, X } from 'lucide-react-native';
 import { redemptionsApi, Redemption } from '../api';
 import { colors, typography, spacing } from '../theme';
 import { RootStackParamList } from '../navigation/types';
@@ -95,7 +95,9 @@ const RedeemedCard: React.FC<{
 
       {/* Checkmark a datum */}
       <View style={styles.statusContainer}>
-        <CheckCircle size={28} color="#4ADE80" fill="#4ADE80" />
+        <View style={styles.checkCircle}>
+          <Check size={18} color="#FFFFFF" strokeWidth={3} />
+        </View>
         <Text style={styles.usedAtText}>
           {formatUsedAt(redemption.used_at)}
         </Text>
@@ -465,6 +467,14 @@ const styles = StyleSheet.create({
   statusContainer: {
     alignItems: 'center',
     paddingHorizontal: spacing.xs,
+  },
+  checkCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#40B4C6',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   usedAtText: {
     ...typography.caption,

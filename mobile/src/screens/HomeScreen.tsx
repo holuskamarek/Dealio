@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MapPin, Search, X } from 'lucide-react-native';
+import { Search, X } from 'lucide-react-native';
 import { promotionsApi, savedPromotionsApi, Promotion } from '../api';
 import { PromotionCard } from '../components';
 import { colors, typography, spacing } from '../theme';
@@ -229,19 +229,25 @@ export const HomeScreen: React.FC = () => {
         />
       }
     >
-      {/* Header*/}
-      <View style={styles.headerRow}>
-        <View style={styles.locationRow}>
-          <MapPin size={18} color={colors.primary.main} />
-          <Text style={styles.locationText}>Brno</Text>
+      {/* Hlavní nadpis s ikonou hledání */}
+      <View style={styles.titleSection}>
+        <View style={styles.titleRow}>
+          <Text style={styles.mainTitle}>
+            {selectedCategory === 'Vše' ? 'Nejbližší nabídky v okolí' : selectedCategory}
+          </Text>
+          <TouchableOpacity onPress={() => setIsSearchActive(!isSearchActive)}>
+            {isSearchActive ? (
+              <X size={22} color={colors.primary.main} />
+            ) : (
+              <Search size={22} color={colors.primary.main} />
+            )}
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => setIsSearchActive(!isSearchActive)}>
-          {isSearchActive ? (
-            <X size={22} color={colors.primary.main} />
-          ) : (
-            <Search size={22} color={colors.primary.main} />
-          )}
-        </TouchableOpacity>
+        <Text style={styles.mainSubtitle}>
+          {searchQuery
+            ? `Výsledky pro "${searchQuery}"`
+            : 'Exkluzivní slevy, oblíbené podniky.'}
+        </Text>
       </View>
 
       {/* Search Bar */}
@@ -266,7 +272,7 @@ export const HomeScreen: React.FC = () => {
         </View>
       )}
 
-      {/* Filter Chips */}
+      {/* Filter Chips - pod nadpisem */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -293,18 +299,6 @@ export const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-
-      {/* Hlavní nadpis */}
-      <View style={styles.titleSection}>
-        <Text style={styles.mainTitle}>
-          {selectedCategory === 'Vše' ? 'Nejbližší nabídky v okolí' : selectedCategory}
-        </Text>
-        <Text style={styles.mainSubtitle}>
-          {searchQuery
-            ? `Výsledky pro "${searchQuery}"`
-            : 'Exkluzivní slevy, oblíbené podniky.'}
-        </Text>
-      </View>
 
       {/* Kategorie s horizontálním scrollem */}
       {categories.map((section) => (
@@ -365,24 +359,11 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
   },
 
-  // Header
-  headerRow: {
+  // Title row
+  titleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing['2xl'],
-    paddingBottom: spacing.sm,
-  },
-  locationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  locationText: {
-    ...typography.callout,
-    color: colors.text.primary,
-    fontWeight: '600',
   },
 
   // Search
@@ -440,7 +421,8 @@ const styles = StyleSheet.create({
   // Hlavní nadpis
   titleSection: {
     paddingHorizontal: spacing.md,
-    paddingBottom: spacing.lg,
+    paddingTop: spacing['2xl'],
+    paddingBottom: spacing.md,
   },
   mainTitle: {
     ...typography.h2,
