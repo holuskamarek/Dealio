@@ -128,7 +128,29 @@ function loadPage(page) {
         `;
         setupPromotionForm(editId);
     } else if (page === 'kalendar') {
-        content.innerHTML = '<h2>Kalendář</h2><p>Kalendář nabídek.</p>';
+        content.innerHTML = `
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button class="cal-arrow" id="prevMonth">&lt;</button>
+                        <span class="cal-month-title" id="calMonthTitle">Leden 2025</span>
+                        <button class="cal-arrow" id="nextMonth">&gt;</button>
+                    </div>
+                    <div class="calendar-actions">
+                        <button class="btn-primary" onclick="loadPage('nova-nabidka')">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Nová nabídka
+                        </button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                </div>
+            </div>
+        `;
+        initCalendar();
     } else if (page === 'nastaveni') {
         content.innerHTML = `
             <form id="settingsForm" class="settings-form">
@@ -507,5 +529,112 @@ async function savePromotion(e, editId) {
         result.className = 'error';
         result.textContent = 'Chyba spojení';
     }
+}
+
+let calendarDate = new Date();
+let calendarPromotions = [];
+
+const MONTHS_CZ = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
+                   'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
+const DAYS_CZ = ['PO', 'ÚT', 'ST', 'ČT', 'PÁ', 'SO', 'NE'];
+const EVENT_COLORS = [
+    { bg: '#e0f2fe', border: '#0ea5e9', text: '#0369a1' },
+    { bg: '#dcfce7', border: '#22c55e', text: '#166534' },
+    { bg: '#fef3c7', border: '#f59e0b', text: '#92400e' },
+    { bg: '#fce7f3', border: '#ec4899', text: '#9d174d' },
+    { bg: '#ede9fe', border: '#8b5cf6', text: '#5b21b6' },
+    { bg: '#ffedd5', border: '#f97316', text: '#9a3412' },
+];
+
+async function initCalendar() {
+    await loadCalendarPromotions();
+    renderCalendar();
+
+    document.getElementById('prevMonth').addEventListener('click', () => {
+        calendarDate.setMonth(calendarDate.getMonth() - 1);
+        renderCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', () => {
+        calendarDate.setMonth(calendarDate.getMonth() + 1);
+        renderCalendar();
+    });
+}
+
+async function loadCalendarPromotions() {
+    try {
+        const res = await fetch(`${API_URL}/promotions/my`, {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+            calendarPromotions = data.data;
+        }
+    } catch (err) {
+        console.error('Chyba načítání akcí:', err);
+    }
+}
+
+function renderCalendar() {
+    const grid = document.getElementById('calendarGrid');
+    const title = document.getElementById('calMonthTitle');
+
+    const year = calendarDate.getFullYear();
+    const month = calendarDate.getMonth();
+
+    title.textContent = `${MONTHS_CZ[month]} ${year}`;
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDay = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = lastDay.getDate();
+
+    let html = '<div class="cal-weekdays">';
+    DAYS_CZ.forEach(day => {
+        html += `<div class="cal-weekday">${day}</div>`;
+    });
+    html += '</div><div class="cal-days">';
+
+
+    for (let i = 0; i < startDay; i++) {
+        html += '<div class="cal-day cal-day-empty"></div>';
+    }
+
+    const today = new Date();
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const isToday = date.toDateString() === today.toDateString();
+        const dayPromotions = getPromotionsForDate(date);
+
+        html += `<div class="cal-day${isToday ? ' cal-day-today' : ''}">
+            <span class="cal-day-num">${day}</span>
+            <div class="cal-day-events">`;
+
+        dayPromotions.slice(0, 2).forEach(p => {
+            const colorIndex = calendarPromotions.findIndex(cp => cp.id === p.id) % EVENT_COLORS.length;
+            const color = EVENT_COLORS[colorIndex];
+            html += `<div class="cal-event" style="background:${color.bg};border-left-color:${color.border};color:${color.text}" onclick="loadPage('upravit-nabidku-${p.id}')">${p.title}</div>`;
+        });
+
+        if (dayPromotions.length > 2) {
+            html += `<div class="cal-event-more">+${dayPromotions.length - 2} další</div>`;
+        }
+
+        html += '</div></div>';
+    }
+
+    html += '</div>';
+    grid.innerHTML = html;
+}
+
+function getPromotionsForDate(date) {
+    return calendarPromotions.filter(p => {
+        const start = new Date(p.start_datetime);
+        const end = new Date(p.end_datetime);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59, 999);
+        date.setHours(12, 0, 0, 0);
+        return date >= start && date <= end;
+    });
 }
 
