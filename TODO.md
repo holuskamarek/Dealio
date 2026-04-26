@@ -43,16 +43,17 @@ Na co nesmis zapomenout ty trotle.
 
 ## Admin web (pro business_owner)
 
-- [ ] Login pro business_owner
+- [x] Login pro business_owner
 - [ ] Dashboard s přehledem
-- [ ] Ověření PIN kódu / sken QR zákazníka
+- [x] Ověření PIN kódu / sken QR zákazníka
   - Spis to asi vidim jen na nejakou sekci pro overeni toho pin kodu. Fungovat to bude takhle:
     1. Zákazník ukáže PIN obsluze
     2. Obsluha zadá PIN do systému
       - POST /redemptions/redeem { pin_code: "J5CU57" }
-- [ ] Seznam uplatněných slev
-- [ ] Správa akcí (CRUD)
+- [x] Seznam uplatněných slev
+- [x] Správa akcí (CRUD)
 - [ ] Statistiky 
+- [ ] Kalendář
 
 ---
 
