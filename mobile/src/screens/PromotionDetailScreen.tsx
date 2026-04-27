@@ -12,22 +12,22 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Dimensions,
+  Image,
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackScreenProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation/types';
 import { Calendar, MapPin, Clock } from 'lucide-react-native';
 import { promotionsApi, Promotion } from '../api';
 import { colors, typography, spacing } from '../theme';
 import { borderRadius } from '../theme/spacing';
-import { RootStackParamList } from '../navigation/types';
 import { RedemptionModal } from '../components/RedemptionModal';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PromotionDetail'>;
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-/**
- * Placeholder barvy pro obrázek
- */
+
 const PLACEHOLDER_COLORS: Record<string, string> = {
   'kavárna': colors.cardPlaceholder.yellow,
   'bistro': colors.cardPlaceholder.green,
@@ -37,23 +37,18 @@ const PLACEHOLDER_COLORS: Record<string, string> = {
   'jiné': colors.cardPlaceholder.blue,
 };
 
-/**
- * Formátování otevírací doby pro zobrazení
- */
+
 const formatOpeningHours = (
   openingHours?: Record<string, { open: string; close: string }>,
 ): string => {
   if (!openingHours) return 'Neuvedeno';
   const days = Object.values(openingHours);
   if (days.length === 0) return 'Neuvedeno';
-  // Zjednodušený formát - vezmi první a poslední den
   const first = days[0];
   return `Po - Ne: ${first.open} - ${first.close}`;
 };
 
-/**
- * Formátování data
- */
+
 const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr);
   const day = date.getDate().toString().padStart(2, '0');
@@ -66,6 +61,7 @@ const formatDate = (dateStr: string): string => {
 
 export const PromotionDetailScreen: React.FC<Props> = ({ route }) => {
   const { promotionId } = route.params;
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [promotion, setPromotion] = useState<Promotion | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,29 +105,29 @@ export const PromotionDetailScreen: React.FC<Props> = ({ route }) => {
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Obrázek / placeholder */}
-        <View style={[styles.imageArea, { backgroundColor: placeholderColor }]}>
-          <Text style={styles.imageText}>foto</Text>
-        </View>
 
-        {/* Obsah */}
+        {promotion.image_url ? (
+          <Image source={{ uri: promotion.image_url }} style={styles.imageArea} resizeMode="cover" />
+        ) : (
+          <View style={[styles.imageArea, { backgroundColor: placeholderColor }]} />
+        )}
+
+
         <View style={styles.content}>
-          {/* Název podniku */}
           {business && (
-            <Text style={styles.businessName}>{business.name}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('BusinessDetail', { businessId: business.id })}>
+              <Text style={[styles.businessName, styles.businessNameLink]}>{business.name}</Text>
+            </TouchableOpacity>
           )}
 
-          {/* Název akce */}
           <Text style={styles.promoTitle}>
             {promotion.discount_percent}% sleva – {promotion.title}
           </Text>
 
-          {/* Popis */}
           {promotion.description && (
             <Text style={styles.description}>{promotion.description}</Text>
           )}
 
-          {/* Info řádky */}
           <View style={styles.infoSection}>
             <View style={styles.infoRow}>
               <Calendar size={18} color={colors.text.secondary} />
@@ -166,7 +162,6 @@ export const PromotionDetailScreen: React.FC<Props> = ({ route }) => {
         </View>
       </ScrollView>
 
-      {/* Tlačítko Uplatnit slevu */}
       <View style={styles.bottomBar}>
         <TouchableOpacity
           style={styles.redeemButton}
@@ -177,7 +172,6 @@ export const PromotionDetailScreen: React.FC<Props> = ({ route }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Redemption Modal */}
       <RedemptionModal
         visible={showRedemptionModal}
         promotionId={promotionId}

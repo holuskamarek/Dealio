@@ -12,10 +12,6 @@ export class PromotionsService {
     private businessRepository: Repository<Business>,
   ) {}
 
-  /**
-   * Vrátí seznam všech aktivních akcí
-   * TODO: Přidat filtrování podle času (jen aktuální akce)
-   */
   async findAll() {
     const promotions = await this.promotionRepository.find({
       where: { is_active: true },
@@ -168,7 +164,6 @@ export class PromotionsService {
       throw new ForbiddenException('Nemáš oprávnění upravit tuto akci');
     }
 
-    // Aktualizuj pole
     if (data.title) promotion.title = data.title;
     if (data.description) promotion.description = data.description;
     if (data.discount_percent !== undefined) promotion.discount_percent = data.discount_percent;
@@ -177,6 +172,7 @@ export class PromotionsService {
     if (data.target_hours) promotion.target_hours = data.target_hours;
     if (data.limit !== undefined) promotion.limit = data.limit;
     if (data.is_active !== undefined) promotion.is_active = data.is_active;
+    if (data.image_url !== undefined) promotion.image_url = data.image_url;
 
     await this.promotionRepository.save(promotion);
 

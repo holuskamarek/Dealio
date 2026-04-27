@@ -5,20 +5,13 @@
 
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View, Text, StyleSheet } from 'react-native';
+
 import { RootStackParamList } from './types';
 import { AuthNavigator } from './AuthNavigator';
 import { MainNavigator } from './MainNavigator';
 import { PromotionDetailScreen } from '../screens/PromotionDetailScreen';
-import { colors, typography } from '../theme';
-
-// Placeholder pro business detail (zatím)
-const BusinessDetailScreen = ({ route }: any) => (
-  <View style={styles.placeholder}>
-    <Text style={styles.placeholderText}>Detail podniku</Text>
-    <Text style={styles.placeholderSubtext}>ID: {route.params?.businessId}</Text>
-  </View>
-);
+import { BusinessDetailScreen } from '../screens/BusinessDetailScreen';
+import { colors } from '../theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -66,21 +59,5 @@ export const RootNavigator: React.FC<RootNavigatorProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  placeholder: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.light.background,
-  },
-  placeholderText: {
-    ...typography.h1,
-    color: colors.text.primary,
-    marginBottom: 8,
-  },
-  placeholderSubtext: {
-    ...typography.body,
-    color: colors.text.secondary,
-  },
-});
+
 

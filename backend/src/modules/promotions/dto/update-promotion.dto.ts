@@ -38,5 +38,14 @@ export class UpdatePromotionDto {
   @IsBoolean()
   @IsOptional()
   is_active?: boolean;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(500)
+  image_url?: string;
+
+  @IsString()
+  @IsOptional()
+  business_id?: string;
 }
 

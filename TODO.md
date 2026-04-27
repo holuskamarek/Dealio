@@ -33,12 +33,14 @@ Na co nesmis zapomenout ty trotle.
 - [x] Search (vyhledávání podle názvu akce/podniku)
 - [x] Filtry (kategorie na HomeScreen, řazení na Favorites/Redeemed)
 - [ ] Forgot password screen
-- [ ] opening hours v aplikaci (zatím jen upravujeme v admin-webu)
-- [ ] Profil podniku s krátkým popisem a fotkou + lokace, cislo atd. (V budoucnu tam muzou byt i hodnoceni)
+- [x] opening hours v aplikaci (zatím jen upravujeme v admin-webu)
+- [x] Profil podniku s krátkým popisem a fotkou + lokace, cislo atd. (V budoucnu tam muzou byt i hodnoceni)
 
 
-- [ ] Obrázky v Promotion
+- [x] Obrázky v Promotion
 - [ ] Kategorie/tagy akcí
+- [ ] Tlačítko see all v aplikaci
+- [ ] Moznost uplatnit pin kod pouze akce ktera patri vlastnikovi podniku. Aktualni stav - jakykolo majitel muze overit  pin vsech slev
 
 
 ## Admin web (pro business_owner)
@@ -53,7 +55,7 @@ Na co nesmis zapomenout ty trotle.
 - [x] Seznam uplatněných slev
 - [x] Správa akcí (CRUD)
 - [ ] Statistiky 
-- [ ] Kalendář
+- [x] Kalendář
 
 ---
 

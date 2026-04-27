@@ -44,6 +44,9 @@ export class Promotion {
   @Column({ type: 'boolean', default: true })
   is_active!: boolean;
 
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  image_url!: string;
+
   @CreateDateColumn()
   created_at!: Date;
 
@@ -61,7 +64,5 @@ export class Promotion {
   @OneToMany(() => Redemption, (redemption) => redemption.promotion)
   redemptions!: Redemption[];
 
-  // TODO: Přidat fotografie/obrázky
-  // TODO: Přidat kategorie akcí
 }
 

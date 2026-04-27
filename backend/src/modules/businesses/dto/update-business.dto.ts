@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsEnum, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsObject, MinLength, MaxLength } from 'class-validator';
 import { BusinessType } from './create-business.dto';
 
 export class UpdateBusinessDto {
@@ -33,9 +33,13 @@ export class UpdateBusinessDto {
   @MaxLength(500, { message: 'Popis nesmí přesáhnout 500 znaků' })
   description?: string;
 
+  @IsObject()
+  @IsOptional()
+  opening_hours?: Record<string, { open: string; close: string }>;
+
   @IsString()
   @IsOptional()
-  @MaxLength(500, { message: 'Otevírací doba nesmí přesáhnout 500 znaků' })
-  opening_hours?: string;
+  @MaxLength(500, { message: 'URL obrázku nesmí přesáhnout 500 znaků' })
+  image_url?: string;
 }
 

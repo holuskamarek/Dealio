@@ -10,12 +10,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  ImageBackground,
 } from 'react-native';
 import { Heart } from 'lucide-react-native';
 import { Promotion } from '../api/types';
 import { colors, spacing } from '../theme';
 
-// Šířka karty
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export const CARD_WIDTH = SCREEN_WIDTH * 0.44;
 export const CARD_HEIGHT = CARD_WIDTH * 1.1;
@@ -27,9 +27,6 @@ interface PromotionCardProps {
   onToggleSave?: (promotionId: string) => void;
 }
 
-/**
- * Placeholder barva podle indexu business type
- */
 const PLACEHOLDER_COLORS: Record<string, string> = {
   'kavárna': colors.cardPlaceholder.yellow,
   'bistro': colors.cardPlaceholder.green,
@@ -58,44 +55,56 @@ export const PromotionCard: React.FC<PromotionCardProps> = ({
     }
   };
 
+  const imageContent = (
+    <>
+      {onToggleSave && (
+        <TouchableOpacity
+          style={styles.heartButton}
+          onPress={handleHeartPress}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Heart
+            size={22}
+            color={colors.white}
+            fill={isSaved ? colors.status.error : 'transparent'}
+            strokeWidth={2}
+          />
+        </TouchableOpacity>
+      )}
+      <View style={styles.gradient}>
+        <View style={styles.textOverlay}>
+          <Text style={styles.title} numberOfLines={2}>
+            {promotion.title}
+          </Text>
+          {business ? (
+            <Text style={styles.businessName} numberOfLines={1}>
+              {business.name}
+            </Text>
+          ) : null}
+        </View>
+      </View>
+    </>
+  );
+
   return (
     <TouchableOpacity
       style={styles.card}
       onPress={() => onPress?.(promotion)}
       activeOpacity={0.85}
     >
-      {/* Obrázek / placeholder */}
-      <View style={[styles.imageArea, { backgroundColor: placeholderColor }]}>
-        {/* Srdíčko pro uložení akce */}
-        {onToggleSave && (
-          <TouchableOpacity
-            style={styles.heartButton}
-            onPress={handleHeartPress}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Heart
-              size={22}
-              color={colors.white}
-              fill={isSaved ? colors.primary.coral : 'transparent'}
-              strokeWidth={2}
-            />
-          </TouchableOpacity>
-        )}
-
-        {/* Gradient overlay pro čitelnost textu */}
-        <View style={styles.gradient}>
-          <View style={styles.textOverlay}>
-            <Text style={styles.title} numberOfLines={2}>
-              {promotion.title}
-            </Text>
-            {business ? (
-              <Text style={styles.businessName} numberOfLines={1}>
-                {business.name}
-              </Text>
-            ) : null}
-          </View>
+      {promotion.image_url ? (
+        <ImageBackground
+          source={{ uri: promotion.image_url }}
+          style={styles.imageArea}
+          resizeMode="cover"
+        >
+          {imageContent}
+        </ImageBackground>
+      ) : (
+        <View style={[styles.imageArea, { backgroundColor: placeholderColor }]}>
+          {imageContent}
         </View>
-      </View>
+      )}
     </TouchableOpacity>
   );
 };

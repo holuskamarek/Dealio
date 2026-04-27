@@ -4,7 +4,7 @@
  */
 
 
-// Auth Types
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -24,7 +24,6 @@ export interface AuthResponse {
 }
 
 
-// User Types
 export interface User {
   id: string;
   email: string;
@@ -33,14 +32,13 @@ export interface User {
 }
 
 
-// API Response Types
 export interface ApiError {
   message: string;
   statusCode: number;
 }
 
 
-// Promotion Types
+
 export interface Promotion {
   id: string;
   business_id: string;
@@ -52,6 +50,7 @@ export interface Promotion {
   target_hours?: string[];
   limit?: number;
   is_active: boolean;
+  image_url?: string;
   created_at: string;
   updated_at: string;
   business?: Business;
@@ -66,25 +65,22 @@ export interface Business {
   phone?: string;
   website?: string;
   description?: string;
+  image_url?: string;
   opening_hours?: Record<string, { open: string; close: string }>;
   created_at: string;
   updated_at: string;
 }
-
-// API List Response
 export interface ApiListResponse<T> {
   success: boolean;
   data: T[];
   count: number;
 }
 
-// API Detail Response
 export interface ApiDetailResponse<T> {
   success: boolean;
   data: T;
 }
 
-// Redemption Types
 export interface Redemption {
   id: string;
   promotion_id: string;

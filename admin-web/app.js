@@ -96,6 +96,10 @@ function loadPage(page) {
                             <label>Limit uplatnění</label>
                             <input type="number" id="promoLimit" min="1" placeholder="Neomezeno">
                         </div>
+                        <div class="form-group">
+                            <label>URL obrázku</label>
+                            <input type="url" id="promoImageUrl" placeholder="https://example.com/obrazek.jpg">
+                        </div>
                     </div>
                     <div class="settings-section">
                         <h3>Platnost</h3>
@@ -179,6 +183,14 @@ function loadPage(page) {
                             <label>Adresa</label>
                             <input type="text" id="businessAddress" required>
                         </div>
+                        <div class="form-group">
+                            <label>Telefonní číslo</label>
+                            <input type="tel" id="businessPhone" placeholder="+420 123 456 789">
+                        </div>
+                        <div class="form-group">
+                            <label>Webová stránka</label>
+                            <input type="url" id="businessWebsite" placeholder="https://www.podnik.cz">
+                        </div>
                     </div>
                     <div class="settings-section">
                         <h3>Otevírací doba</h3>
@@ -198,6 +210,10 @@ function loadPage(page) {
                     <div class="form-group">
                         <label>Krátký popis (zobrazí se zákazníkům)</label>
                         <textarea id="businessDescription" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>URL obrázku podniku</label>
+                        <input type="url" id="businessImageUrl" placeholder="https://example.com/fotka-podniku.jpg">
                     </div>
                 </div>
                 <button type="submit" class="btn-primary">Uložit změny</button>
@@ -301,6 +317,9 @@ async function loadSettings() {
             document.getElementById('businessAddress').value = currentBusiness.address || '';
             document.getElementById('businessType').value = currentBusiness.type || 'ostatni';
             document.getElementById('businessDescription').value = currentBusiness.description || '';
+            document.getElementById('businessPhone').value = currentBusiness.phone || '';
+            document.getElementById('businessWebsite').value = currentBusiness.website || '';
+            document.getElementById('businessImageUrl').value = currentBusiness.image_url || '';
 
             const hours = currentBusiness.opening_hours || {};
             const dayMap = { monday: 'mon', tuesday: 'tue', wednesday: 'wed', thursday: 'thu', friday: 'fri', saturday: 'sat', sunday: 'sun' };
@@ -338,11 +357,19 @@ async function saveSettings(e) {
         }
     }
 
+    const imageUrl = document.getElementById('businessImageUrl').value.trim();
+
+    const phone = document.getElementById('businessPhone').value.trim();
+    const website = document.getElementById('businessWebsite').value.trim();
+
     const data = {
         name: document.getElementById('businessName').value,
         address: document.getElementById('businessAddress').value,
         type: document.getElementById('businessType').value,
         description: document.getElementById('businessDescription').value,
+        phone: phone || null,
+        website: website || null,
+        image_url: imageUrl || null,
         opening_hours
     };
 
@@ -457,6 +484,7 @@ async function setupPromotionForm(editId) {
                 document.getElementById('promoDescription').value = p.description || '';
                 document.getElementById('promoDiscount').value = p.discount_percent || '';
                 document.getElementById('promoLimit').value = p.limit || '';
+                document.getElementById('promoImageUrl').value = p.image_url || '';
                 document.getElementById('promoStart').value = toLocalDatetime(p.start_datetime);
                 document.getElementById('promoEnd').value = toLocalDatetime(p.end_datetime);
                 document.getElementById('promoTargetHours').value = (p.target_hours || []).join(', ');
@@ -493,12 +521,15 @@ async function savePromotion(e, editId) {
     const targetHoursRaw = document.getElementById('promoTargetHours').value.trim();
     const target_hours = targetHoursRaw ? targetHoursRaw.split(',').map(h => h.trim()) : [];
 
+    const imageUrl = document.getElementById('promoImageUrl').value.trim();
+
     const data = {
         business_id: currentBusiness.id,
         title: document.getElementById('promoTitle').value,
         description: document.getElementById('promoDescription').value,
         discount_percent: parseInt(document.getElementById('promoDiscount').value),
         limit: document.getElementById('promoLimit').value ? parseInt(document.getElementById('promoLimit').value) : null,
+        image_url: imageUrl || null,
         start_datetime: new Date(document.getElementById('promoStart').value).toISOString(),
         end_datetime: new Date(document.getElementById('promoEnd').value).toISOString(),
         target_hours: target_hours.length > 0 ? target_hours : null,

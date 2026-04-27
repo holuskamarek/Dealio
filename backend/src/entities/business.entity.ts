@@ -43,6 +43,9 @@ export class Business {
   @Column({ type: 'text', nullable: true })
   description!: string;
 
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  image_url!: string;
+
   @CreateDateColumn()
   created_at!: Date;
 

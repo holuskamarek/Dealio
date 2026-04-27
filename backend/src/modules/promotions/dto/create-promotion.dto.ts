@@ -42,5 +42,10 @@ export class CreatePromotionDto {
   @IsBoolean()
   @IsOptional()
   is_active?: boolean;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(500)
+  image_url?: string;
 }
 

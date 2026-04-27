@@ -10,11 +10,6 @@ export class BusinessesService {
     private businessRepository: Repository<Business>,
   ) {}
 
-  /**
-   * Vrátí seznam všech podniků
-   * TODO: Přidat pagination (limit, offset)
-   * TODO: Přidat filtrování podle typu (kavárna, bistro, atd.)
-   */
   async findAll() {
     const businesses = await this.businessRepository.find({
       relations: ['owner', 'promotions'],
@@ -30,10 +25,7 @@ export class BusinessesService {
     };
   }
 
-  /**
-   * Vrátí detail jednoho podniku
-   * FIXME: Pokud podnik neexistuje, vrátí 404
-   */
+
   async findById(id: string) {
     try {
       const business = await this.businessRepository.findOne({
@@ -47,11 +39,9 @@ export class BusinessesService {
 
       return business;
     } catch (error) {
-      // Pokud je to už NotFoundException, přehoď ji dál
       if (error instanceof NotFoundException) {
         throw error;
       }
-      // Jinak zaloguj a přehoď jako NotFoundException
       console.error('Error in findById:', error);
       throw new NotFoundException(`Podnik s ID ${id} nebyl nalezen`);
     }
@@ -72,10 +62,6 @@ export class BusinessesService {
     };
   }
 
-  /**
-   * Vrátí podniky podle typu
-   * TODO: Implementovat filtrování
-   */
   async findByType(type: string) {
     const businesses = await this.businessRepository.find({
       where: { type: type as any },
@@ -89,13 +75,7 @@ export class BusinessesService {
     };
   }
 
-  /**
-   * Vytvoří nový podnik
-   * TODO: Přidat validaci vstupů (DTO)
-   * TODO: Přidat kontrolu, jestli uživatel je business_owner
-   */
   async create(data: any, owner: User) {
-    // FIXME: Validace by měla být v DTO
     if (!data.name || !data.address || !data.type) {
       throw new BadRequestException('Chybí povinná pole: name, address, type');
     }
@@ -120,10 +100,6 @@ export class BusinessesService {
     };
   }
 
-  /**
-   * Upraví existující podnik
-   * Jen vlastník může upravit svůj podnik
-   */
   async update(id: string, data: any, user: User) {
     const business = await this.businessRepository.findOne({
       where: { id },
@@ -133,19 +109,19 @@ export class BusinessesService {
       throw new NotFoundException(`Podnik s ID ${id} nebyl nalezen`);
     }
 
-    // Zkontroluj, jestli je uživatel vlastník
     if (business.owner_id !== user.id) {
       throw new ForbiddenException('Nemáš oprávnění upravit tento podnik');
     }
 
-    // Aktualizuj pole
+
     if (data.name) business.name = data.name;
     if (data.address) business.address = data.address;
     if (data.type) business.type = data.type;
-    if (data.phone) business.phone = data.phone;
-    if (data.website) business.website = data.website;
-    if (data.description) business.description = data.description;
+    if (data.phone !== undefined) business.phone = data.phone;
+    if (data.website !== undefined) business.website = data.website;
+    if (data.description !== undefined) business.description = data.description;
     if (data.opening_hours) business.opening_hours = data.opening_hours;
+    if (data.image_url !== undefined) business.image_url = data.image_url;
 
     await this.businessRepository.save(business);
 
@@ -156,10 +132,7 @@ export class BusinessesService {
     };
   }
 
-  /**
-   * Smaže podnik
-   * Jen vlastník může smazat svůj podnik
-   */
+
   async delete(id: string, user: User) {
     const business = await this.businessRepository.findOne({
       where: { id },
@@ -169,7 +142,7 @@ export class BusinessesService {
       throw new NotFoundException(`Podnik s ID ${id} nebyl nalezen`);
     }
 
-    // Zkontroluj, jestli je uživatel vlastník
+
     if (business.owner_id !== user.id) {
       throw new ForbiddenException('Nemáš oprávnění smazat tento podnik');
     }
