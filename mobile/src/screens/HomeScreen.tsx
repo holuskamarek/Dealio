@@ -23,13 +23,9 @@ import { PromotionCard } from '../components';
 import { colors, typography, spacing } from '../theme';
 import { RootStackParamList } from '../navigation/types';
 
-// Dostupné kategorie pro filtrování
 const FILTER_CATEGORIES = ['Vše', 'Káva', 'Jídlo', 'Sladkosti', 'Nápoje', 'Ostatní'] as const;
 type FilterCategory = typeof FILTER_CATEGORIES[number];
 
-/**
- * Mapování business type → kategorie pro zobrazení
- */
 const CATEGORY_MAP: Record<string, string> = {
   'kavárna': 'Káva',
   'cukrárna': 'Sladkosti',
@@ -195,6 +191,10 @@ export const HomeScreen: React.FC = () => {
     navigation.navigate('PromotionDetail', { promotionId: promotion.id });
   };
 
+  const handleSeeAll = (category: string) => {
+    navigation.navigate('Category', { category });
+  };
+
   // Loading stav
   if (isLoading) {
     return (
@@ -229,7 +229,6 @@ export const HomeScreen: React.FC = () => {
         />
       }
     >
-      {/* Hlavní nadpis s ikonou hledání */}
       <View style={styles.titleSection}>
         <View style={styles.titleRow}>
           <Text style={styles.mainTitle}>
@@ -249,8 +248,6 @@ export const HomeScreen: React.FC = () => {
             : 'Exkluzivní slevy, oblíbené podniky.'}
         </Text>
       </View>
-
-      {/* Search Bar */}
       {isSearchActive && (
         <View style={styles.searchContainer}>
           <View style={styles.searchInputWrapper}>
@@ -272,7 +269,6 @@ export const HomeScreen: React.FC = () => {
         </View>
       )}
 
-      {/* Filter Chips - pod nadpisem */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -300,18 +296,17 @@ export const HomeScreen: React.FC = () => {
         ))}
       </ScrollView>
 
-      {/* Kategorie s horizontálním scrollem */}
       {categories.map((section) => (
         <View key={section.category} style={styles.categorySection}>
-          {/* Hlavička kategorie */}
           <View style={styles.categoryHeader}>
             <Text style={styles.categoryTitle}>{section.category}</Text>
-            <TouchableOpacity>
-              <Text style={styles.seeAll}>See all</Text>
-            </TouchableOpacity>
+            {selectedCategory === 'Vše' && (
+              <TouchableOpacity onPress={() => handleSeeAll(section.category)}>
+                <Text style={styles.seeAll}>Zobrazit vše</Text>
+              </TouchableOpacity>
+            )}
           </View>
 
-          {/* Horizontální scroll karet */}
           <FlatList
             data={section.promotions}
             keyExtractor={(item) => item.id}
@@ -330,7 +325,6 @@ export const HomeScreen: React.FC = () => {
         </View>
       ))}
 
-      {/* Prázdný stav */}
       {categories.length === 0 && (
         <View style={styles.empty}>
           <Text style={styles.emptyText}>Žádné akce k dispozici</Text>
@@ -340,7 +334,6 @@ export const HomeScreen: React.FC = () => {
         </View>
       )}
 
-      {/* Spodní padding */}
       <View style={{ height: spacing.xl }} />
     </ScrollView>
   );

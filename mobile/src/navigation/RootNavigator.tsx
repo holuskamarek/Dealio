@@ -11,6 +11,7 @@ import { AuthNavigator } from './AuthNavigator';
 import { MainNavigator } from './MainNavigator';
 import { PromotionDetailScreen } from '../screens/PromotionDetailScreen';
 import { BusinessDetailScreen } from '../screens/BusinessDetailScreen';
+import { CategoryScreen } from '../screens/CategoryScreen';
 import { colors } from '../theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -47,6 +48,15 @@ export const RootNavigator: React.FC<RootNavigatorProps> = ({
             options={{
               headerShown: true,
               headerTitle: 'Detail podniku',
+              headerStyle: { backgroundColor: colors.light.background },
+              headerTintColor: colors.text.primary,
+            }}
+          />
+          <Stack.Screen
+            name="Category"
+            component={CategoryScreen}
+            options={{
+              headerShown: true,
               headerStyle: { backgroundColor: colors.light.background },
               headerTintColor: colors.text.primary,
             }}

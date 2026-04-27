@@ -23,6 +23,7 @@ export type RootStackParamList = {
   Main: undefined;
   PromotionDetail: { promotionId: string };
   BusinessDetail: { businessId: string };
+  Category: { category: string };
 };
 
 // Declare global types for useNavigation hook
