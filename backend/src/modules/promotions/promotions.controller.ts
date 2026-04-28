@@ -23,6 +23,11 @@ export class PromotionsController {
     return this.promotionsService.findByOwner(req.user.id);
   }
 
+  @Get('business/:businessId')
+  async findByBusiness(@Param('businessId') businessId: string) {
+    return this.promotionsService.findByBusinessId(businessId);
+  }
+
 
   @Get(':id')
   async findById(@Param('id') id: string) {

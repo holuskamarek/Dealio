@@ -8,12 +8,15 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Linking,
+  FlatList,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MapPin, Phone, Globe, Clock } from 'lucide-react-native';
 import { colors, typography, spacing } from '../theme';
 import { RootStackParamList } from '../navigation/types';
 import { apiClient } from '../api/client';
+import { promotionsApi, Promotion } from '../api';
+import { PromotionCard } from '../components';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BusinessDetail'>;
 
@@ -39,19 +42,25 @@ const DAYS_CZ: Record<string, string> = {
   sunday: 'Neděle',
 };
 
-export const BusinessDetailScreen: React.FC<Props> = ({ route }) => {
+export const BusinessDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   const { businessId } = route.params;
   const [business, setBusiness] = useState<Business | null>(null);
+  const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadBusiness();
+    loadData();
   }, [businessId]);
 
-  const loadBusiness = async () => {
+  const loadData = async () => {
     try {
-      const business = await apiClient.get<Business>(`/businesses/${businessId}`);
-      setBusiness(business);
+      const [businessData, promosRes] = await Promise.all([
+        apiClient.get<Business>(`/businesses/${businessId}`),
+        promotionsApi.getPromotionsByBusiness(businessId).catch(() => ({ data: [] } as any)),
+      ]);
+      setBusiness(businessData);
+      const activePromos = (promosRes.data || []).filter((p: Promotion) => p.is_active);
+      setPromotions(activePromos);
     } catch (err) {
       console.error('Chyba načítání podniku:', err);
     } finally {
@@ -132,6 +141,25 @@ export const BusinessDetailScreen: React.FC<Props> = ({ route }) => {
                 <Text style={styles.hoursText}>{hours.open} - {hours.close}</Text>
               </View>
             ))}
+          </View>
+        )}
+
+        {promotions.length > 0 && (
+          <View style={styles.promotionsSection}>
+            <Text style={styles.sectionTitle}>Aktuální akce</Text>
+            <FlatList
+              data={promotions}
+              keyExtractor={(item) => item.id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.promotionsList}
+              renderItem={({ item }) => (
+                <PromotionCard
+                  promotion={item}
+                  onPress={(p) => navigation.navigate('PromotionDetail', { promotionId: p.id })}
+                />
+              )}
+            />
           </View>
         )}
       </View>
@@ -236,5 +264,16 @@ const styles = StyleSheet.create({
   hoursText: {
     ...typography.body,
     color: colors.text.primary,
+  },
+  promotionsSection: {
+    marginTop: spacing.lg,
+  },
+  sectionTitle: {
+    ...typography.h3,
+    color: colors.text.primary,
+    marginBottom: spacing.sm,
+  },
+  promotionsList: {
+    paddingVertical: spacing.xs,
   },
 });

@@ -24,7 +24,7 @@ Na co nesmis zapomenout ty trotle.
 
 - [ ] Pagination (limit/offset) pro businesses a promotions
 - [ ] DTO validace (class-validator)
-- [ ] GET /promotions/business/:id
+- [x] GET /promotions/business/:id
 
 
 - [x] Favorites tab
@@ -39,7 +39,7 @@ Na co nesmis zapomenout ty trotle.
 
 - [x] Obrázky v Promotion
 - [ ] Kategorie/tagy akcí
-- [ ] Tlačítko see all v aplikaci
+- [x] Tlačítko see all v aplikaci
 - [ ] Moznost uplatnit pin kod pouze akce ktera patri vlastnikovi podniku. Aktualni stav - jakykolo majitel muze overit  pin vsech slev
 
 
