@@ -40,7 +40,7 @@ Na co nesmis zapomenout ty trotle.
 - [x] Obrázky v Promotion
 - [ ] Kategorie/tagy akcí
 - [x] Tlačítko see all v aplikaci
-- [ ] Moznost uplatnit pin kod pouze akce ktera patri vlastnikovi podniku. Aktualni stav - jakykolo majitel muze overit  pin vsech slev
+- [x] Moznost uplatnit pin kod pouze akce ktera patri vlastnikovi podniku. Aktualni stav - jakykolo majitel muze overit  pin vsech slev
 
 
 ## Admin web (pro business_owner)

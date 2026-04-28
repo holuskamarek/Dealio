@@ -156,7 +156,6 @@ export class RedemptionsService {
       throw new NotFoundException('Podnik pro tuto akci nebyl nalezen');
     }
 
-    // Ověř že uživatel je business_owner (zjednodušení pro vývoj)
     const user = await this.userRepository.findOne({
       where: { id: businessOwnerId },
     });
@@ -165,7 +164,10 @@ export class RedemptionsService {
       throw new ForbiddenException('Pouze majitel podniku může ověřit PIN kód');
     }
 
-    // Přidej promotion do redemption pro response
+    if (promotion.business.owner_id !== businessOwnerId) {
+      throw new ForbiddenException('Tento PIN kód patří k akci jiného podniku');
+    }
+
     redemption.promotion = promotion;
 
     // TODO: Zkontroluj expiraci PIN kódu

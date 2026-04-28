@@ -42,14 +42,8 @@ export class SeedService {
 
     console.log(`Vlastník: ${owner.name} (${owner.email})`);
 
-    // Zkontroluj jestli už jsou podniky
     const businessCount = await this.businessRepository.count();
-    if (businessCount > 0) {
-      console.log('Podniky už existují, přeskakuji...');
-      console.log('Seed dokončen');
-      return;
-    }
-
+    if (businessCount === 0) {
     // === PODNIKY ===
     const kavarna = await this.businessRepository.save({
       name: 'Kavárna u Čmelina',
@@ -217,7 +211,108 @@ export class SeedService {
     });
 
     console.log('Eventy vytvořeny');
+    } else {
+      console.log('Základní podniky už existují, přeskakuji prvotní seed');
+    }
+
+    await this.seedSecondaryOwners();
+
     console.log('Seed úspěšně dokončen!');
+  }
+
+  private async seedSecondaryOwners() {
+    const owners = [
+      {
+        email: 'jana@example.com',
+        password: 'password123',
+        name: 'Jana Nováková',
+        business: {
+          name: 'Pizzerie Roma',
+          address: 'Veveří 22, Brno',
+          type: 'pizzerie' as const,
+          phone: '+420 555 222 333',
+          description: 'Pravá italská pizza z pece na dřevo',
+          opening_hours: {
+            monday: { open: '11:00', close: '22:00' },
+            tuesday: { open: '11:00', close: '22:00' },
+            wednesday: { open: '11:00', close: '22:00' },
+            thursday: { open: '11:00', close: '22:00' },
+            friday: { open: '11:00', close: '23:00' },
+            saturday: { open: '12:00', close: '23:00' },
+            sunday: { open: '12:00', close: '21:00' },
+          },
+        },
+        promotion: {
+          title: 'Pizza Margherita -20%',
+          description: 'Klasika za skvělou cenu, každý všední den.',
+          discount_percent: 20,
+          target_hours: ['11:00-15:00'],
+          limit: 40,
+        },
+      },
+      {
+        email: 'tomas@example.com',
+        password: 'password123',
+        name: 'Tomáš Svoboda',
+        business: {
+          name: 'Květinářství Tulipán',
+          address: 'Lidická 8, Brno',
+          type: 'kvetinarstvi' as const,
+          phone: '+420 555 444 555',
+          description: 'Čerstvé květiny a kytice na míru',
+          opening_hours: {
+            monday: { open: '08:00', close: '18:00' },
+            tuesday: { open: '08:00', close: '18:00' },
+            wednesday: { open: '08:00', close: '18:00' },
+            thursday: { open: '08:00', close: '18:00' },
+            friday: { open: '08:00', close: '18:00' },
+            saturday: { open: '09:00', close: '14:00' },
+          },
+        },
+        promotion: {
+          title: 'Kytice ke svátku -15%',
+          description: 'Sleva 15% na všechny vázané kytice.',
+          discount_percent: 15,
+          limit: 20,
+        },
+      },
+    ];
+
+    const now = new Date();
+    const nextMonth = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+    for (const o of owners) {
+      let user = await this.userRepository.findOne({ where: { email: o.email } });
+      if (!user) {
+        user = await this.createUser(o.email, o.password, o.name, 'business_owner');
+        console.log(`Vytvoren majitel: ${o.email}`);
+      }
+
+      let business = await this.businessRepository.findOne({
+        where: { name: o.business.name },
+      });
+      if (!business) {
+        business = await this.businessRepository.save({
+          ...o.business,
+          owner_id: user.id,
+        });
+        console.log(`Vytvoren podnik: ${o.business.name}`);
+      }
+
+      const existingPromo = await this.promotionRepository.findOne({
+        where: { title: o.promotion.title },
+      });
+      if (!existingPromo) {
+        await this.promotionRepository.save({
+          ...o.promotion,
+          business_id: business.id,
+          start_datetime: now,
+          end_datetime: nextMonth,
+          is_active: true,
+        });
+        console.log(`Vytvorena akce: ${o.promotion.title}`);
+      }
+    }
   }
 
   private async createUser(
