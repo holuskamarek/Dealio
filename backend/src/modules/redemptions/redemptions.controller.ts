@@ -96,6 +96,13 @@ export class RedemptionsController {
     };
   }
 
+  @Get('stats')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async getStats(@Request() req: any) {
+    return this.redemptionsService.getStatsForOwner(req.user.id);
+  }
+
   /**
    * GET /redemptions/me
    * Získat všechny redemptions aktuálního uživatele

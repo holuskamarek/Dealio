@@ -22,7 +22,7 @@ async function showApp() {
     document.getElementById('loginPage').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     await loadCurrentBusiness();
-    loadPage('dashboard');
+    loadPage('overeni');
 }
 
 async function loadCurrentBusiness() {
@@ -49,7 +49,7 @@ function loadPage(page) {
         }
     });
 
-    if (page === 'dashboard') {
+    if (page === 'overeni') {
         content.innerHTML = `
             <div class="pin-container">
                 <h2>Ověření slevy</h2>
@@ -61,6 +61,27 @@ function loadPage(page) {
             </div>
         `;
         setupPinForm();
+    } else if (page === 'dashboard') {
+        content.innerHTML = `
+            <div class="dashboard">
+                <div class="stats-row" id="statsRow">
+                    <div class="stat-card"><span class="stat-num" id="statToday">–</span><span class="stat-label">Dnes uplatněno</span></div>
+                    <div class="stat-card"><span class="stat-num" id="statTotal">–</span><span class="stat-label">Celkem uplatněno</span></div>
+                    <div class="stat-card"><span class="stat-num" id="statActive">–</span><span class="stat-label">Aktivní akce</span></div>
+                </div>
+
+                <div class="dash-block">
+                    <h3>Posledních 7 dní</h3>
+                    <div class="chart" id="chart"></div>
+                </div>
+
+                <div class="dash-block">
+                    <h3>Poslední uplatnění</h3>
+                    <div id="recentList" class="recent-list"><p class="empty-state">Načítám...</p></div>
+                </div>
+            </div>
+        `;
+        loadStats();
     } else if (page === 'nabidky') {
         content.innerHTML = `
             <div class="page-header">
@@ -293,6 +314,7 @@ function setupPinForm() {
                 result.className = 'success';
                 result.textContent = `✓ ${data.data.promotion.title} - ${data.data.user.name}`;
                 document.getElementById('pinCode').value = '';
+                loadStats();
             } else {
                 result.className = 'error';
                 result.textContent = data.message || 'Neplatný PIN';
@@ -302,6 +324,67 @@ function setupPinForm() {
             result.textContent = 'Chyba spojení';
         }
     });
+}
+
+async function loadStats() {
+    if (!document.getElementById('statToday')) return;
+    try {
+        const res = await fetch(`${API_URL}/redemptions/stats`, {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        const data = await res.json();
+        if (!data.success) return;
+
+        const s = data.data;
+        document.getElementById('statToday').textContent = s.today_redemptions;
+        document.getElementById('statTotal').textContent = s.total_redemptions;
+        document.getElementById('statActive').textContent = s.active_promotions;
+
+        renderChart(s.last_7_days);
+        renderRecent(s.recent);
+    } catch (err) {
+        console.error('Chyba načítání statistik:', err);
+    }
+}
+
+function renderChart(days) {
+    const chart = document.getElementById('chart');
+    if (!chart) return;
+    const max = Math.max(1, ...days.map(d => d.count));
+    const dayNames = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'];
+    chart.innerHTML = days.map(d => {
+        const date = new Date(d.date);
+        const h = Math.round((d.count / max) * 100);
+        return `
+            <div class="chart-bar">
+                <span class="chart-count">${d.count}</span>
+                <div class="chart-fill" style="height: ${h}%"></div>
+                <span class="chart-day">${dayNames[date.getDay()]}<br>${date.getDate()}.${date.getMonth() + 1}.</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderRecent(items) {
+    const list = document.getElementById('recentList');
+    if (!list) return;
+    if (!items || items.length === 0) {
+        list.innerHTML = '<p class="empty-state">Zatím žádná uplatnění.</p>';
+        return;
+    }
+    list.innerHTML = items.map(r => {
+        const d = new Date(r.used_at);
+        const time = d.toLocaleString('cs-CZ', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
+        return `
+            <div class="recent-item">
+                <div>
+                    <strong>${r.promotion_title}</strong>
+                    <span class="recent-meta">${r.user_name} · ${r.business_name}</span>
+                </div>
+                <span class="recent-time">${time}</span>
+            </div>
+        `;
+    }).join('');
 }
 
 async function loadSettings() {

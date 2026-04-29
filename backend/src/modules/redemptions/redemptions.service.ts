@@ -10,13 +10,6 @@ import { Redemption } from '../../entities/redemption.entity';
 import { Promotion } from '../../entities/promotion.entity';
 import { User } from '../../entities/user.entity';
 
-/**
- * RedemptionsService - služba pro správu uplatnění slev
- * 
- * TODO: Přidat expiraci PIN kódů (např. 15 minut)
- * TODO: Přidat rate limiting pro generování PIN kódů
- * FIXME: Přidat počet pokusů o uplatnění (max 3 pokusy)
- */
 @Injectable()
 export class RedemptionsService {
   constructor(
@@ -229,5 +222,83 @@ export class RedemptionsService {
     }
 
     return redemption;
+  }
+
+  async getStatsForOwner(ownerId: string) {
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const sevenDaysAgo = new Date(startOfToday);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+
+    const baseQuery = () =>
+      this.redemptionRepository
+        .createQueryBuilder('r')
+        .innerJoin('r.promotion', 'p')
+        .innerJoin('p.business', 'b')
+        .where('b.owner_id = :ownerId', { ownerId })
+        .andWhere('r.is_used = true');
+
+    const totalRedemptions = await baseQuery().getCount();
+
+    const todayRedemptions = await baseQuery()
+      .andWhere('r.used_at >= :start', { start: startOfToday })
+      .getCount();
+
+    const activePromotions = await this.promotionRepository
+      .createQueryBuilder('p')
+      .innerJoin('p.business', 'b')
+      .where('b.owner_id = :ownerId', { ownerId })
+      .andWhere('p.is_active = true')
+      .andWhere('p.start_datetime <= :now', { now })
+      .andWhere('p.end_datetime >= :now', { now })
+      .getCount();
+
+    const lastWeek = await baseQuery()
+      .andWhere('r.used_at >= :weekStart', { weekStart: sevenDaysAgo })
+      .select("DATE(r.used_at)", 'day')
+      .addSelect('COUNT(*)', 'count')
+      .groupBy("DATE(r.used_at)")
+      .getRawMany();
+
+    const chart: { date: string; count: number }[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(sevenDaysAgo);
+      d.setDate(d.getDate() + i);
+      const key = d.toISOString().slice(0, 10);
+      const found = lastWeek.find((row) => {
+        const rowDate = row.day instanceof Date ? row.day.toISOString().slice(0, 10) : String(row.day).slice(0, 10);
+        return rowDate === key;
+      });
+      chart.push({ date: key, count: found ? Number(found.count) : 0 });
+    }
+
+    const recent = await this.redemptionRepository
+      .createQueryBuilder('r')
+      .innerJoinAndSelect('r.promotion', 'p')
+      .innerJoinAndSelect('p.business', 'b')
+      .innerJoinAndSelect('r.user', 'u')
+      .where('b.owner_id = :ownerId', { ownerId })
+      .andWhere('r.is_used = true')
+      .orderBy('r.used_at', 'DESC')
+      .limit(5)
+      .getMany();
+
+    return {
+      success: true,
+      data: {
+        total_redemptions: totalRedemptions,
+        today_redemptions: todayRedemptions,
+        active_promotions: activePromotions,
+        last_7_days: chart,
+        recent: recent.map((r) => ({
+          id: r.id,
+          used_at: r.used_at,
+          user_name: r.user?.name,
+          promotion_title: r.promotion?.title,
+          business_name: r.promotion?.business?.name,
+        })),
+      },
+    };
   }
 }

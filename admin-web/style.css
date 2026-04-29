@@ -593,6 +593,166 @@ body {
         align-items: flex-start;
         gap: 12px;
     }
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.pin-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.pin-box h2 {
+    margin-bottom: 18px;
+    font-size: 20px;
+}
+
+.pin-box .pin-form {
+    max-width: 100%;
+    align-items: stretch;
+    gap: 12px;
+    flex-direction: row;
+}
+
+.pin-box .pin-form input {
+    padding: 14px;
+    font-size: 22px;
+    letter-spacing: 6px;
+}
+
+.pin-box .pin-form button {
+    width: auto;
+    padding: 0 25px;
+}
+
+.pin-box .pin-form p {
+    width: 100%;
+    text-align: left;
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.stat-num {
+    font-size: 32px;
+    font-weight: 600;
+    color: #081639;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.dash-block {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.dash-block h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 160px;
+    gap: 8px;
+}
+
+.chart-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+.chart-count {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.chart-fill {
+    width: 100%;
+    background: #40B4C6;
+    border-radius: 4px 4px 0 0;
+    min-height: 2px;
+    transition: height 0.3s;
+}
+
+.chart-day {
+    font-size: 11px;
+    color: #888;
+    margin-top: 6px;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.recent-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.recent-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    gap: 10px;
+}
+
+.recent-item:last-child {
+    border-bottom: none;
+}
+
+.recent-item strong {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+
+.recent-meta {
+    font-size: 13px;
+    color: #777;
+}
+
+.recent-time {
+    font-size: 13px;
+    color: #999;
+    white-space: nowrap;
 }
 
 .calendar-container {
