@@ -1,8 +1,8 @@
 {
-  "name": "dealio-backend",
+  "name": "crowdease-backend",
   "version": "0.0.1",
-  "description": "Dealio - Backend API pro řízení poptávky a loajality",
-  "author": "Dealio Team",
+  "description": "CrowdEase - Backend API pro řízení poptávky a loajality",
+  "author": "CrowdEase",
   "private": true,
   "license": "MIT",
   "scripts": {

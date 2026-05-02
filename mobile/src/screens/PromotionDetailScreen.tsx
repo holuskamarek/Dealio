@@ -220,6 +220,10 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
+  businessNameLink: {
+    color: colors.primary.main,
+    textDecorationLine: 'underline',
+  },
   promoTitle: {
     ...typography.h2,
     color: colors.text.primary,

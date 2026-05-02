@@ -56,6 +56,7 @@ temp/
 DEVELOPMENT_LOG.md
 NOTES.md
 NOTES_*.md
+nevim.md
 
 # Manual testing & documentation
 tests/
@@ -65,4 +66,5 @@ docs/
 # Local dev scripts
 start-dev.bat
 start-dev.ps1
+
 

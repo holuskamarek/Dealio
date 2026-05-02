@@ -1,4 +1,4 @@
-# Docker Setup - Dealio
+# Docker Setup - CrowdEase
 
 ## Přehled
 

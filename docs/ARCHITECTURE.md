@@ -1,8 +1,8 @@
-# Architektura Dealio
+# Architektura CrowdEase
 
 ## Přehled
 
-Dealio je třívrstvá aplikace:
+CrowdEase je třívrstvá aplikace:
 - **Backend**: NestJS API
 - **Frontend**: React Native (mobilní) + HTML/CSS (admin web)
 - **Databáze**: PostgreSQL
