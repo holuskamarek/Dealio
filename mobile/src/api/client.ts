@@ -6,45 +6,34 @@
 import { storage } from '../utils/storage';
 import { ApiError } from './types';
 
-// Base URL pro API
-// Použij IP adresu počítače místo localhost (localhost nefunguje z telefonu)
-const API_URL = 'http://192.168.0.125:3000';
 
-/**
- * Hlavní funkce pro API požadavky
- * Automaticky přidá Content-Type a Authorization header
- */
+// Sem vlož svoji IP
+const API_URL = 'http://172.20.10.11:3000';
+
 export async function apiRequest<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
-  // Získat token z storage
   const token = await storage.getToken();
 
-  // Sestavit URL
   const url = `${API_URL}${endpoint}`;
 
-  // Sestavit headers
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...options?.headers,
   };
 
-  // Přidat Authorization header pokud máme token
   if (token) {
     (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
   }
 
-  // Provést požadavek
   const response = await fetch(url, {
     ...options,
     headers,
   });
 
-  // Zpracovat odpověď
   const data = await response.json();
 
-  // Pokud není OK vyhodit chybu
   if (!response.ok) {
     const error: ApiError = {
       message: data.message || 'Něco se pokazilo',
@@ -56,18 +45,14 @@ export async function apiRequest<T>(
   return data as T;
 }
 
-/**
- * GET požadavek
- */
+// GET požadavek
 export function get<T>(endpoint: string): Promise<T> {
   return apiRequest<T>(endpoint, {
     method: 'GET',
   });
 }
 
-/**
- * POST požadavek
- */
+//POST požadavek
 export function post<T>(endpoint: string, body?: unknown): Promise<T> {
   return apiRequest<T>(endpoint, {
     method: 'POST',
@@ -75,9 +60,7 @@ export function post<T>(endpoint: string, body?: unknown): Promise<T> {
   });
 }
 
-/**
- * PUT požadavek
- */
+//PUT požadavek
 export function put<T>(endpoint: string, body?: unknown): Promise<T> {
   return apiRequest<T>(endpoint, {
     method: 'PUT',
@@ -85,9 +68,7 @@ export function put<T>(endpoint: string, body?: unknown): Promise<T> {
   });
 }
 
-/**
- * DELETE požadavek
- */
+// DELETE požadavek
 export function del<T>(endpoint: string): Promise<T> {
   return apiRequest<T>(endpoint, {
     method: 'DELETE',

@@ -17,10 +17,6 @@ out/
 .env.local
 .env.*.local
 
-# Osobní poznámky
-*.local.md
-NOTES.md
-
 # IDE
 .vscode/
 .idea/
@@ -33,12 +29,6 @@ NOTES.md
 Thumbs.db
 .DS_Store
 
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Docker
 .docker/
@@ -52,16 +42,6 @@ tmp/
 temp/
 *.tmp
 
-# Local development notes
-DEVELOPMENT_LOG.md
-NOTES.md
-NOTES_*.md
-nevim.md
-
-# Manual testing & documentation
-tests/
-docs/
-*.postman_collection.json
 
 # Local dev scripts
 start-dev.bat
