@@ -8,12 +8,6 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Business } from './business.entity';
-
-/**
- * Follow entita reprezentuje vztah sledování mezi uživatelem a podnikem
- * Umožňuje uživatelům sledovat oblíbené podniky a dostávat notifikace o nových akcích
-
- */
 @Entity('follows')
 export class Follow {
   @PrimaryGeneratedColumn('uuid')

@@ -26,34 +26,5 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    # TODO: Přidat volumes pro persistenci pgAdmin nastavení
-    # volumes:
-    #   - pgadmin_data:/var/lib/pgadmin
-
-  # TODO: Přidat Redis pro caching a session management
-  # redis:
-  #   image: redis:7-alpine
-  #   container_name: dealio-redis
-  #   ports:
-  #     - "6379:6379"
-
-  # Backend API (zatím zakomentováno, bude aktivováno později)
-  # backend:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   container_name: dealio-backend
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - NODE_ENV=development
-  #     - DATABASE_URL=postgresql://dealio_user:dealio_password@postgres:5432/dealio_db
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ./backend/src:/app/src
-  #   command: npm run start:dev
-
 volumes:
   postgres_data:

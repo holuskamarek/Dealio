@@ -70,10 +70,7 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  /**
-   * Login uživatele
-   * TODO: Přidat rate limiting pro ochranu proti brute force útokům
-   */
+ 
   async login(email: string, password: string) {
     // Normalizuj email na lowercase
     const normalizedEmail = email.toLowerCase();

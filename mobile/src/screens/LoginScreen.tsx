@@ -1,7 +1,4 @@
-/**
- * CrowdEase Login Screen
- * Dark mode design
- */
+
 
 import React, { useState } from 'react';
 import {
@@ -54,7 +51,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   };
 
   const handleForgotPassword = () => {
-    // TODO: Udelat zapomenuty heslo Screen
   };
 
   const handleSignUp = () => {
@@ -71,7 +67,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Header Section */}
         <View style={styles.header}>
           <Image
             source={require('../../assets/CrowdEase_logo.png')}
@@ -79,14 +74,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             resizeMode="contain"
           />
           <Text style={styles.brandName}>CrowdEase</Text>
-          <Text style={styles.title}>Welcome</Text>
-          <Text style={styles.subtitle}>Log in and discover the best deals.</Text>
+          <Text style={styles.title}>Vítej</Text>
+          <Text style={styles.subtitle}>Přihlaš se a objevuj nejlepší nabídky.</Text>
         </View>
 
-        {/* Form Section */}
         <View style={styles.form}>
           <Input
-            placeholder="Email address"
+            placeholder="E-mailová adresa"
             value={email}
             onChangeText={setEmail}
             variant="dark"
@@ -97,7 +91,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           />
 
           <Input
-            placeholder="Password"
+            placeholder="Heslo"
             value={password}
             onChangeText={setPassword}
             variant="dark"
@@ -107,7 +101,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           />
 
           <Button
-            title="Log in"
+            title="Přihlásit se"
             onPress={handleLogin}
             variant="primary"
             loading={isLoading}
@@ -115,16 +109,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           />
 
           <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+            <Text style={styles.forgotPasswordText}>Zapomenuté heslo?</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Footer Section */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Don't have an account yet?{' '}
+            Ještě nemáš účet?{' '}
             <Text style={styles.footerLink} onPress={handleSignUp}>
-              Sign up
+              Registrovat se
             </Text>
           </Text>
         </View>

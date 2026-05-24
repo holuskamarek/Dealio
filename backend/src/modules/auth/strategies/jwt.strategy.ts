@@ -19,10 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  /**
-   * Ověř JWT token a vrať uživatele
-   * Passport automaticky volá tuto metodu
-   */
+
   async validate(payload: any) {
     // payload obsahuje { sub, email, role }
     const user = await this.authService.validateUser(payload.sub);

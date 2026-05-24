@@ -7,12 +7,6 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
-/**
- * Globální exception filter pro jednotné zpracování chyb
- * Zachytává všechny výjimky a vrací standardizovaný formát
- * 
- * FIXME: Přidat error tracking
- */
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);

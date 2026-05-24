@@ -1,14 +1,9 @@
-/**
- * CrowdEase Register Screen
- * Dark mode design
- */
 
 import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -68,7 +63,6 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Header Section */}
         <View style={styles.header}>
           <Image
             source={require('../../assets/CrowdEase_logo.png')}
@@ -76,14 +70,13 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
             resizeMode="contain"
           />
           <Text style={styles.brandName}>CrowdEase</Text>
-          <Text style={styles.title}>Welcome</Text>
-          <Text style={styles.subtitle}>Create an account to start saving.</Text>
+          <Text style={styles.title}>Vítej</Text>
+          <Text style={styles.subtitle}>Vytvoř si účet a začni šetřit.</Text>
         </View>
 
-        {/* Form Section */}
         <View style={styles.form}>
           <Input
-            placeholder="Name"
+            placeholder="Jméno"
             value={name}
             onChangeText={setName}
             variant="dark"
@@ -93,7 +86,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
           />
 
           <Input
-            placeholder="Email address"
+            placeholder="E-mailová adresa"
             value={email}
             onChangeText={setEmail}
             variant="dark"
@@ -104,7 +97,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
           />
 
           <Input
-            placeholder="Password"
+            placeholder="Heslo"
             value={password}
             onChangeText={setPassword}
             variant="dark"
@@ -114,7 +107,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
           />
 
           <Button
-            title="Sign Up"
+            title="Registrovat se"
             onPress={handleRegister}
             variant="primary"
             loading={isLoading}
@@ -122,12 +115,11 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
           />
         </View>
 
-        {/* Footer Section */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Already have an account?{' '}
+            Už máš účet?{' '}
             <Text style={styles.footerLink} onPress={handleLogin}>
-              Log in
+              Přihlásit se
             </Text>
           </Text>
         </View>
